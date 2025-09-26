@@ -1,5 +1,4 @@
-       
-                <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -660,8 +659,8 @@
     </div>
 
     <script>
-        // Enhanced Global Variables
-        let assignments = JSON.parse(localStorage.getItem('assignments')) || [];
+        // Enhanced Global Variables using in-memory storage instead of localStorage
+        let assignments = [];
         let score = 0;
         let gameBunny = { x: 175, y: 125, vx: 1.5, vy: 1.2, size: 20 };
         let gameCarrots = [];
@@ -762,6 +761,186 @@
                     }
                 }, 500);
             }, 3000);
+        }
+
+        // Assignment functions
+        function loadAssignments() {
+            const list = document.getElementById('assignments-list');
+            list.innerHTML = '';
+            
+            if (assignments.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666;">No assignments yet! Add your first one above. ✨</p>';
+                return;
+            }
+
+            assignments.forEach((assignment, index) => {
+                const assignmentEl = document.createElement('div');
+                assignmentEl.className = 'card assignment-card';
+                
+                const deadline = new Date(assignment.deadline);
+                const now = new Date();
+                const timeDiff = deadline - now;
+                const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+                
+                let statusClass = 'status-progress';
+                let statusText = 'In Progress';
+                
+                if (assignment.completed) {
+                    statusClass = 'status-done';
+                    statusText = 'Completed';
+                } else if (daysDiff < 0) {
+                    statusClass = 'status-overdue';
+                    statusText = 'Overdue';
+                } else if (daysDiff <= 2) {
+                    statusClass = 'status-soon';
+                    statusText = 'Due Soon';
+                }
+                
+                assignmentEl.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <h3 style="margin: 0 0 10px 0; color: #ff69b4;">${assignment.subject}</h3>
+                            <p style="margin: 0 0 10px 0; color: #666;">${assignment.context}</p>
+                            <div class="deadline">📅 Due: ${deadline.toLocaleDateString()} at ${deadline.toLocaleTimeString()}</div>
+                            <div class="status-badge ${statusClass}">${statusText}</div>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="checkbox" class="checkbox" ${assignment.completed ? 'checked' : ''} 
+                                   onchange="toggleAssignment(${index})">
+                            <button onclick="deleteAssignment(${index})" style="background: #ff4757; padding: 8px 12px; font-size: 12px;">🗑️</button>
+                        </div>
+                    </div>
+                `;
+                
+                list.appendChild(assignmentEl);
+            });
+        }
+
+        function addAssignment() {
+            const subject = document.getElementById('subject').value;
+            const deadline = document.getElementById('deadline').value;
+            const context = document.getElementById('context').value;
+            
+            if (!subject || !deadline || !context) return;
+            
+            assignments.push({
+                subject,
+                deadline,
+                context,
+                completed: false,
+                createdAt: new Date()
+            });
+            
+            document.getElementById('add-assignment').reset();
+            loadAssignments();
+            speak('📚 New assignment added! You\'ve got this! 💪', 'Shab');
+            showAchievement('Assignment Added!');
+        }
+
+        function toggleAssignment(index) {
+            assignments[index].completed = !assignments[index].completed;
+            loadAssignments();
+            
+            if (assignments[index].completed) {
+                speak('🎉 Awesome! Assignment completed! You\'re amazing! ✨', 'Alex');
+                showAchievement('Assignment Completed!');
+                createCelebration();
+            } else {
+                speak('📝 Back to work mode! You can do it! 💪', 'Shab');
+            }
+        }
+
+        function deleteAssignment(index) {
+            assignments.splice(index, 1);
+            loadAssignments();
+            speak('🗑️ Assignment removed! Stay organized! ✨', 'Alex');
+        }
+
+        function createCelebration() {
+            const celebrationEmojis = ['🎉', '🎊', '✨', '🌟', '💫', '🏆'];
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const celebration = document.createElement('div');
+                    celebration.textContent = celebrationEmojis[Math.floor(Math.random() * celebrationEmojis.length)];
+                    celebration.style.position = 'fixed';
+                    celebration.style.left = Math.random() * window.innerWidth + 'px';
+                    celebration.style.top = Math.random() * window.innerHeight + 'px';
+                    celebration.style.fontSize = '30px';
+                    celebration.style.zIndex = '1000';
+                    celebration.style.pointerEvents = 'none';
+                    celebration.style.animation = 'celebration 3s ease-out forwards';
+                    document.body.appendChild(celebration);
+                    
+                    setTimeout(() => {
+                        if (celebration.parentNode) {
+                            celebration.parentNode.removeChild(celebration);
+                        }
+                    }, 3000);
+                }, i * 100);
+            }
+        }
+
+        function checkReminders() {
+            const now = new Date();
+            assignments.forEach(assignment => {
+                if (assignment.completed) return;
+                
+                const deadline = new Date(assignment.deadline);
+                const timeDiff = deadline - now;
+                const hoursDiff = timeDiff / (1000 * 60 * 60);
+                
+                if (hoursDiff > 0 && hoursDiff <= 24 && !assignment.reminded) {
+                    speak(`⏰ Reminder: ${assignment.subject} is due soon! Time to work! 💪`, 'Shab');
+                    showAchievement(`Reminder: ${assignment.subject} due soon!`);
+                    assignment.reminded = true;
+                }
+            });
+        }
+
+        // Message form functionality
+        function initMessageForm() {
+            const openBtn = document.getElementById('open-message');
+            const form = document.getElementById('message-form');
+            
+            openBtn.addEventListener('click', () => {
+                if (form.style.display === 'none') {
+                    form.style.display = 'block';
+                    openBtn.textContent = '❌ Close Message Portal';
+                    speak('💌 Message portal opened! Send me your thoughts! ✨', 'Alex');
+                } else {
+                    form.style.display = 'none';
+                    openBtn.textContent = '💬 Open Message Portal';
+                }
+            });
+            
+            form.addEventListener('submit', (e) => {
+                speak('🚀 Message sent! Thanks for reaching out! 💖', 'Alex');
+                showAchievement('Message Sent!');
+            });
+        }
+
+        // Photo functionality
+        function loadPhoto() {
+            const fileInput = document.getElementById('photo-upload');
+            const urlInput = document.getElementById('photo-url');
+            const preview = document.getElementById('photo-preview');
+            const img = document.getElementById('preview-img');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                    speak('📸 Beautiful photo! A moment captured in time! ✨', 'Alex');
+                    showAchievement('Photo Loaded!');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else if (urlInput.value) {
+                img.src = urlInput.value;
+                preview.style.display = 'block';
+                speak('🌐 Amazing photo from the web! Love it! 💖', 'Shab');
+                showAchievement('Photo Loaded!');
+            }
         }
 
         // Enhanced character interactions
@@ -885,25 +1064,7 @@
             document.addEventListener('touchend', handleEnd);
         }
 
-        // Enhanced load function
-        window.onload = function() {
-            createParticles();
-            setInterval(createParticles, 30000); // Refresh particles
-            
-            speak('✨ Welcome to your magical productivity hub! I\'m Alex! 🌸', 'Alex');
-            setTimeout(() => speak('🚀 And I\'m Shab! Ready to make today incredible? ⭐', 'Shab'), 2500);
-            
-            loadAssignments();
-            updateClock();
-            setInterval(updateClock, 1000);
-            setInterval(checkReminders, 60000);
-            changeQuote();
-            setInterval(changeQuote, 30000);
-            initGame();
-            initDraggableEverywhere();
-            initCharacterInteractions();
-        };
-       // Enhanced Game
+        // Enhanced Game
         function initGame() {
             const canvas = document.getElementById('game-canvas');
             const ctx = canvas.getContext('2d');
@@ -1126,6 +1287,32 @@
             const isDark = document.body.classList.contains('dark-mode');
             speak(isDark ? '🌙 Dark mode activated! Cozy vibes! ✨' : '☀️ Light mode activated! Bright and cheerful! 🌸', 'Alex');
         }
+
+        // Event listeners
+        document.getElementById('add-assignment').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addAssignment();
+        });
+
+        // Enhanced load function
+        window.onload = function() {
+            createParticles();
+            setInterval(createParticles, 30000); // Refresh particles
+            
+            speak('✨ Welcome to your magical productivity hub! I\'m Alex! 🌸', 'Alex');
+            setTimeout(() => speak('🚀 And I\'m Shab! Ready to make today incredible? ⭐', 'Shab'), 2500);
+            
+            loadAssignments();
+            updateClock();
+            setInterval(updateClock, 1000);
+            setInterval(checkReminders, 60000);
+            changeQuote();
+            setInterval(changeQuote, 30000);
+            initGame();
+            initDraggableEverywhere();
+            initCharacterInteractions();
+            initMessageForm();
+        };
     </script>
 </body>
 </html>
