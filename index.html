@@ -5,100 +5,261 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cute Productivity Hub 🌸</title>
     <style>
-        /* Global Styles (unchanged) */
+        /* Global Styles with Enhanced Animations */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
             font-family: 'Comic Sans MS', cursive, sans-serif;
-            background: linear-gradient(to bottom, #ffeef8, #e8f4f8);
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 25%, #fecfef 75%, #ffecd2 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: #333;
             line-height: 1.6;
             padding: 20px;
             min-height: 100vh;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
         }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating particles background */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
         .dark-mode {
-            background: linear-gradient(to bottom, #2c3e50, #34495e);
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 25%, #f093fb 75%, #f5576c 100%);
+            background-size: 400% 400%;
             color: #ecf0f1;
         }
+        
         .dark-mode .card, .dark-mode .character, .dark-mode .character-label, .dark-mode .game-canvas {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
         }
-        h1, h2 {
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #9d4edd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h2 {
             text-align: center;
             margin-bottom: 20px;
             color: #ff69b4;
+            font-size: 1.5em;
+            position: relative;
+            animation: sectionBounce 2s ease-in-out infinite;
         }
+
+        @keyframes sectionBounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
         .dark-mode h1, .dark-mode h2 {
             color: #ff9ff3;
         }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-        .section {
-            margin-bottom: 40px;
-            padding: 20px;
-            background: rgba(255,255,255,0.8);
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        .dark-mode .section {
-            background: rgba(0,0,0,0.3);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        button {
-            background: #ff69b4;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: background 0.3s ease;
-        }
-        button:hover {
-            background: #ff1493;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ff69b4;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            font-family: inherit;
-        }
-        .card {
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .checkbox {
-            transform: scale(1.5);
-            margin-right: 10px;
+            position: relative;
+            z-index: 2;
         }
         
-        /* Updated Character Styles */
-        .characters {
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
             position: relative;
-            height: 200px;
-            border: 2px dashed #ff69b4;
-            border-radius: 20px;
-            margin: 20px 0;
-            background: rgba(255,255,255,0.5);
             overflow: hidden;
         }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .section:hover::before {
+            left: 100%;
+        }
+
+        .section:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .dark-mode .section {
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255,105,180,0.4);
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+        
+        button:hover {
+            background: linear-gradient(45deg, #ff1493, #c71585);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255,105,180,0.6);
+        }
+
+        button:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid transparent;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #ff69b4;
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(255,105,180,0.3);
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff69b4, #ff1493, #9d4edd);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .checkbox {
+            transform: scale(1.5);
+            margin-right: 15px;
+            accent-color: #ff69b4;
+        }
+        
+        /* Enhanced Character Styles */
+        .characters {
+            position: relative;
+            height: 250px;
+            border: 3px dashed #ff69b4;
+            border-radius: 25px;
+            margin: 20px 0;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            animation: borderPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes borderPulse {
+            0%, 100% { border-color: #ff69b4; }
+            50% { border-color: #ff1493; }
+        }
+
         .character-container {
             position: absolute;
             display: flex;
@@ -106,237 +267,467 @@
             align-items: center;
             user-select: none;
             z-index: 10;
+            animation: characterFloat 4s ease-in-out infinite;
         }
+
+        @keyframes characterFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
         .character {
-            font-size: 50px;
+            font-size: 60px;
             cursor: grab;
-            transition: transform 0.2s ease;
+            transition: all 0.3s ease;
             border-radius: 50%;
-            padding: 10px;
-            background: rgba(255,255,255,0.8);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,105,180,0.3);
+            position: relative;
         }
+
+        .character::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #9d4edd);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .character:hover::before {
+            opacity: 1;
+        }
+        
         .character:active {
             cursor: grabbing;
         }
+        
         .character:hover {
-            transform: scale(1.1);
+            transform: scale(1.2) rotate(10deg);
+            box-shadow: 0 12px 35px rgba(255,105,180,0.4);
         }
+        
         .character-label {
-            margin-top: 5px;
-            padding: 3px 8px;
-            border-radius: 15px;
-            background: rgba(255,255,255,0.9);
-            font-size: 12px;
+            margin-top: 8px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+            font-weight: bold;
             color: #ff69b4;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,105,180,0.2);
         }
         
         .speech-bubble {
             position: absolute;
-            background: #fff;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(15px);
             border: 2px solid #ff69b4;
-            border-radius: 20px;
-            padding: 10px;
-            max-width: 200px;
+            border-radius: 25px;
+            padding: 15px;
+            max-width: 250px;
             font-size: 14px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             display: none;
             z-index: 20;
-            animation: bounce 0.5s ease;
+            animation: bubbleAppear 0.5s ease;
+            font-weight: bold;
         }
+
+        @keyframes bubbleAppear {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(5deg); opacity: 0.8; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
         .speech-bubble::after {
             content: '';
             position: absolute;
-            bottom: -10px;
-            left: 20px;
-            border: 10px solid transparent;
+            bottom: -12px;
+            left: 30px;
+            border: 12px solid transparent;
             border-top-color: #ff69b4;
         }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
-        }
         
-        /* Assignments */
+        /* Enhanced Assignments */
         #assignments-list {
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
         }
+
+        .assignment-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,105,180,0.1));
+            border-left: 5px solid #ff69b4;
+            transition: all 0.3s ease;
+        }
+
+        .assignment-card:hover {
+            border-left-width: 10px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,105,180,0.2));
+        }
+        
         .deadline {
             color: #ff69b4;
             font-weight: bold;
+            font-size: 1.1em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 5px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-done { background: linear-gradient(45deg, #4CAF50, #45a049); color: white; }
+        .status-overdue { background: linear-gradient(45deg, #f44336, #d32f2f); color: white; }
+        .status-soon { background: linear-gradient(45deg, #ff9800, #f57c00); color: white; }
+        .status-progress { background: linear-gradient(45deg, #2196F3, #1976D2); color: white; }
         
-        /* Messaging */
+        /* Enhanced Messaging */
         #message-form {
             display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
-        /* Photo */
+        /* Enhanced Photo */
         #photo-preview {
             display: none;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 15px;
+            animation: photoAppear 0.5s ease;
         }
-        #photo-preview img {
-            max-width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        @keyframes photoAppear {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         
-        /* Game */
+        #photo-preview img {
+            max-width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        #photo-preview img:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Enhanced Game */
         .game-container {
             text-align: center;
         }
+        
         .game-canvas {
-            border: 2px solid #ff69b4;
-            border-radius: 15px;
-            background: #fff;
+            border: 3px solid #ff69b4;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
             touch-action: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .game-canvas:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 35px rgba(255,105,180,0.3);
+        }
+
+        .score-display {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ff69b4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin: 10px 0;
+            animation: scoreGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes scoreGlow {
+            0%, 100% { text-shadow: 2px 2px 4px rgba(255,105,180,0.3); }
+            50% { text-shadow: 2px 2px 15px rgba(255,105,180,0.8); }
         }
         
-        /* Footer */
+        /* Enhanced Footer */
         .footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
+        
         .clock {
-            font-size: 18px;
+            font-size: 1.5em;
+            font-weight: bold;
             color: #ff69b4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: clockTick 1s ease-in-out infinite;
         }
+
+        @keyframes clockTick {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
         .quote {
             text-align: center;
             font-style: italic;
-            margin: 10px 0;
+            margin: 15px 0;
+            font-size: 1.1em;
+            color: #666;
+            animation: quoteFloat 3s ease-in-out infinite;
         }
+
+        @keyframes quoteFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
         .toggle {
-            background: #4ecdc4;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            transition: all 0.3s ease;
         }
+        
         .toggle:hover {
-            background: #45b7aa;
+            background: linear-gradient(45deg, #44a08d, #4ecdc4);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* Achievement notifications */
+        .achievement {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: achievementSlide 0.5s ease, achievementPulse 2s ease-in-out infinite;
+            transform: translateX(400px);
+        }
+
+        @keyframes achievementSlide {
+            to { transform: translateX(0); }
+        }
+
+        @keyframes achievementPulse {
+            0%, 100% { box-shadow: 0 8px 25px rgba(76,175,80,0.3); }
+            50% { box-shadow: 0 12px 40px rgba(76,175,80,0.6); }
         }
         
         /* Responsive */
         @media (max-width: 768px) {
             body {
-                padding: 10px;
-            }
-            .section {
                 padding: 15px;
             }
+            .section {
+                padding: 20px;
+                margin-bottom: 25px;
+            }
             .character {
-                font-size: 40px;
+                font-size: 50px;
             }
             .footer {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
+                text-align: center;
+            }
+            h1 {
+                font-size: 2em;
             }
         }
-        
-        /* Draggable Touch Support */
-        @media (hover: none) {
-            .character {
-                touch-action: none;
-            }
+
+        /* Special effects */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ff69b4;
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1) rotate(180deg); opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Cute Productivity Hub 🌸</h1>
+        <h1>✨ Cute Productivity Hub 🌸</h1>
         
         <div class="section">
-            <h2>Meet Alex & Shab</h2>
+            <h2>🎭 Meet Alex & Shab</h2>
             <div class="characters" id="characters-area">
                 <div class="character-container" id="alex-container">
                     <div class="character" id="alex" draggable="true">👧</div>
                     <div class="character-label">Alex</div>
                 </div>
-                <div class="character-container" id="shab-container" style="left: 50px; top: 50px;">
+                <div class="character-container" id="shab-container" style="left: 80px; top: 60px;">
                     <div class="character" id="shab" draggable="true">👦</div>
                     <div class="character-label">Shab</div>
                 </div>
-                
             </div>
             <div id="speech-bubble" class="speech-bubble"></div>
+            <p style="text-align: center; margin-top: 15px; font-style: italic; color: #666;">
+                💬 Click on Alex or Shab to hear them speak! Drag them around! ✨
+            </p>
         </div>
 
         <div class="section">
-            <h2>📚 My Assignments</h2>
+            <h2>📚 My Super Assignments</h2>
             <form id="add-assignment">
-                <input type="text" id="subject" placeholder="Subject" required>
+                <input type="text" id="subject" placeholder="📖 Subject (e.g., Math Homework)" required>
                 <input type="datetime-local" id="deadline" required>
-                <textarea id="context" placeholder="Short description" required></textarea>
-                <button type="submit">Add Assignment</button>
+                <textarea id="context" placeholder="📝 Short description (e.g., Chapter 5 exercises)" required></textarea>
+                <button type="submit">✨ Add Assignment</button>
             </form>
             <div id="assignments-list"></div>
         </div>
 
         <div class="section">
-            <h2>💬 Send Me a Message</h2>
-            <button id="open-message">Send Me a Message</button>
+            <h2>💌 Send Me a Message</h2>
+            <button id="open-message">💬 Open Message Portal</button>
             <form id="message-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
-                <input type="email" name="email" placeholder="Your email" required>
-                <textarea name="message" placeholder="Your message" required></textarea>
-                <button type="submit">Send</button>
+                <input type="email" name="email" placeholder="✉️ Your email address" required>
+                <textarea name="message" placeholder="💭 Your amazing message..." required></textarea>
+                <button type="submit">🚀 Send Message</button>
             </form>
         </div>
 
         <div class="section">
-            <h2>📸 My Photo Moment</h2>
+            <h2>📸 My Photo Moments</h2>
             <input type="file" id="photo-upload" accept="image/*">
-            <input type="url" id="photo-url" placeholder="Or enter image URL">
-            <button onclick="loadPhoto()">Preview Photo</button>
+            <input type="url" id="photo-url" placeholder="🌐 Or enter magical image URL">
+            <button onclick="loadPhoto()">✨ Preview Photo Magic</button>
             <div id="photo-preview" class="card">
                 <img id="preview-img" src="" alt="Preview">
-                <p id="photo-text">A cute moment captured! 🌟</p>
+                <p id="photo-text">🌟 A magical moment captured! ✨</p>
             </div>
         </div>
 
         <div class="section">
-            <h2>🎮 Feed the Bunny Game</h2>
+            <h2>🎮 Feed the Magical Bunny</h2>
             <div class="game-container">
-                <canvas id="game-canvas" class="game-canvas" width="300" height="200"></canvas>
-                <p>Tap/Click to feed the bunny carrots! 🥕</p>
-                <p>Score: <span id="score">0</span></p>
+                <canvas id="game-canvas" class="game-canvas" width="350" height="250"></canvas>
+                <p>🥕 Tap/Click anywhere to create carrots and feed the bunny! 🐰</p>
+                <div class="score-display">Score: <span id="score">0</span> 🏆</div>
             </div>
         </div>
 
         <div class="footer">
-            <div class="clock" id="clock"></div>
-            <div class="quote" id="quote"></div>
+            <div class="clock" id="clock">🕐 Loading...</div>
+            <div class="quote" id="quote">✨ Loading inspiration...</div>
             <button class="toggle" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
         </div>
     </div>
 
     <script>
-        // Global Variables
+        // Enhanced Global Variables
         let assignments = JSON.parse(localStorage.getItem('assignments')) || [];
         let score = 0;
-        let gameBunny = { x: 150, y: 100, vx: 1, vy: 1 };
+        let gameBunny = { x: 175, y: 125, vx: 1.5, vy: 1.2, size: 20 };
         let gameCarrots = [];
+        let particles = [];
+        let achievementCount = 0;
+        
         const quotes = [
-            "You got this! 💪 - Alex",
-            "Keep shining bright! ✨ - Shab",
-            "One step at a time! 🐢 - Alex",
-            "Dream big, work hard! 🌟 - Shab"
+            "🌟 You're absolutely amazing! - Alex",
+            "💪 Keep crushing those goals! - Shab",
+            "🌈 One magical step at a time! - Alex",
+            "🚀 Dream big, achieve bigger! - Shab",
+            "✨ Your potential is limitless! - Alex",
+            "🎯 Focus and you'll conquer anything! - Shab",
+            "🌸 Believe in your beautiful self! - Alex",
+            "⭐ You're destined for greatness! - Shab"
         ];
         let currentQuote = 0;
 
-        // Web Speech API
+        // Create floating particles
+        function createParticles() {
+            const particleEmojis = ['✨', '🌟', '💫', '⭐', '🌸', '🎀', '💖', '🦄'];
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.textContent = particleEmojis[Math.floor(Math.random() * particleEmojis.length)];
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = Math.random() * window.innerHeight + 'px';
+                    particle.style.animationDelay = Math.random() * 6 + 's';
+                    particle.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.parentNode.removeChild(particle);
+                        }
+                    }, 6000);
+                }, i * 100);
+            }
+        }
+
+        // Enhanced speech with more personality
         function speak(text, character = 'Alex') {
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.8;
-                utterance.pitch = character === 'Alex' ? 1.5 : 1.0;
+                utterance.rate = 0.9;
+                utterance.pitch = character === 'Alex' ? 1.6 : 1.1;
+                utterance.volume = 0.8;
                 speechSynthesis.speak(utterance);
             }
             showBubble(text, character);
+            createSparkles(character);
+        }
+
+        function createSparkles(character) {
+            const charEl = document.getElementById(character.toLowerCase());
+            const container = charEl.parentElement;
+            
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.style.left = (container.offsetLeft + Math.random() * 100) + 'px';
+                    sparkle.style.top = (container.offsetTop + Math.random() * 100) + 'px';
+                    document.getElementById('characters-area').appendChild(sparkle);
+                    
+                    setTimeout(() => {
+                        if (sparkle.parentNode) {
+                            sparkle.parentNode.removeChild(sparkle);
+                        }
+                    }, 2000);
+                }, i * 100);
+            }
         }
 
         function showBubble(text, character) {
@@ -345,348 +736,60 @@
             bubble.style.display = 'block';
             const charEl = document.getElementById(character.toLowerCase());
             const containerEl = charEl.parentElement;
-            bubble.style.left = (containerEl.offsetLeft + 20) + 'px';
-            bubble.style.top = (containerEl.offsetTop - 50) + 'px';
-            setTimeout(() => { bubble.style.display = 'none'; }, 3000);
+            bubble.style.left = (containerEl.offsetLeft + 30) + 'px';
+            bubble.style.top = (containerEl.offsetTop - 70) + 'px';
+            setTimeout(() => { bubble.style.display = 'none'; }, 4000);
         }
 
-        // Greetings on Load
+        function showAchievement(text) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.textContent = '🏆 ' + text;
+            document.body.appendChild(achievement);
+            
+            setTimeout(() => {
+                achievement.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    if (achievement.parentNode) {
+                        achievement.parentNode.removeChild(achievement);
+                    }
+                }, 500);
+            }, 3000);
+        }
+
+        // Enhanced character interactions
+        function initCharacterInteractions() {
+            const alex = document.getElementById('alex');
+            const shab = document.getElementById('shab');
+            
+            alex.addEventListener('click', () => {
+                const alexQuotes = [
+                    "Hi there! Ready to be productive? 🌸",
+                    "You're doing amazing! Keep it up! ✨",
+                    "I believe in you completely! 💖",
+                    "Let's make today magical! 🦄"
+                ];
+                speak(alexQuotes[Math.floor(Math.random() * alexQuotes.length)], 'Alex');
+            });
+            
+            shab.addEventListener('click', () => {
+                const shabQuotes = [
+                    "Hey! Let's crush these goals together! 🚀",
+                    "You've got this! I'm cheering for you! 💪",
+                    "Time to show the world what you can do! ⭐",
+                    "Your success story starts now! 🎯"
+                ];
+                speak(shabQuotes[Math.floor(Math.random() * shabQuotes.length)], 'Shab');
+            });
+        }
+
+        // Enhanced load function
         window.onload = function() {
-            speak('Hi! I\'m Alex, ready to help you stay productive! 🌸', 'Alex');
-            setTimeout(() => speak('Hey! Shab here, let\'s crush those goals! 🚀', 'Shab'), 2000);
+            createParticles();
+            setInterval(createParticles, 30000); // Refresh particles
+            
+            speak('✨ Welcome to your magical productivity hub! I\'m Alex! 🌸', 'Alex');
+            setTimeout(() => speak('🚀 And I\'m Shab! Ready to make today incredible? ⭐', 'Shab'), 2500);
+            
             loadAssignments();
-            updateClock();
-            setInterval(updateClock, 1000);
-            setInterval(checkReminders, 60000); // Check every minute
-            changeQuote();
-            setInterval(changeQuote, 30000); // Change quote every 30s
-            initGame();
-            initDraggable();
-        };
-
-        // Draggable Characters (Mouse + Touch) - Updated for containers
-        function initDraggable() {
-            const charactersArea = document.getElementById('characters-area');
-            const containers = document.querySelectorAll('.character-container');
-            let draggedElement = null;
-            let offset = { x: 0, y: 0 };
-
-            function handleStart(e, el) {
-                draggedElement = el;
-                const rect = el.getBoundingClientRect();
-                if (e.type === 'touchstart') {
-                    offset.x = e.touches[0].clientX - rect.left;
-                    offset.y = e.touches[0].clientY - rect.top;
-                } else {
-                    offset.x = e.clientX - rect.left;
-                    offset.y = e.clientY - rect.top;
-                    e.preventDefault();
-                }
-                el.style.zIndex = '100';
-            }
-
-            function handleMove(e) {
-                if (!draggedElement) return;
-                let clientX, clientY;
-                if (e.type === 'touchmove') {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                } else {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                }
-                const areaRect = charactersArea.getBoundingClientRect();
-                draggedElement.style.left = (clientX - areaRect.left - offset.x) + 'px';
-                draggedElement.style.top = (clientY - areaRect.top - offset.y) + 'px';
-                e.preventDefault();
-            }
-
-            function handleEnd() {
-                if (draggedElement) {
-                    draggedElement.style.zIndex = '10';
-                    draggedElement = null;
-                }
-            }
-
-            containers.forEach(el => {
-                el.addEventListener('mousedown', (e) => handleStart(e, el));
-                el.addEventListener('touchstart', (e) => handleStart(e, el), { passive: false });
-
-                // Also allow dragging via the character emoji itself
-                const characterEl = el.querySelector('.character');
-                characterEl.addEventListener('mousedown', (e) => handleStart(e, el));
-                characterEl.addEventListener('touchstart', (e) => handleStart(e, el), { passive: false });
-            });
-
-            charactersArea.addEventListener('mousemove', handleMove);
-            charactersArea.addEventListener('touchmove', handleMove, { passive: false });
-
-            document.addEventListener('mouseup', handleEnd);
-            document.addEventListener('touchend', handleEnd);
-        }
-
-        // Assignments
-        document.getElementById('add-assignment').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const subject = document.getElementById('subject').value;
-            const deadline = new Date(document.getElementById('deadline').value);
-            const context = document.getElementById('context').value;
-            const isoDeadline = deadline.toISOString();
-            const assignment = { subject, deadline: isoDeadline, context, done: false };
-            assignments.push(assignment);
-            localStorage.setItem('assignments', JSON.stringify(assignments));
-            loadAssignments();
-            this.reset();
-            speak('Assignment added! Let\'s get it done! 📝', 'Alex');
-        });
-
-        function loadAssignments() {
-            const list = document.getElementById('assignments-list');
-            list.innerHTML = '';
-            assignments.forEach((assign, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                const now = new Date();
-                const deadline = new Date(assign.deadline);
-                const timeLeft = deadline - now;
-                let status = '';
-                if (assign.done) {
-                    status = '✅ Done!';
-                } else if (timeLeft < 0) {
-                    status = '⏰ Overdue!';
-                } else if (timeLeft < 3600000) { // 1 hour
-                    status = '🚨 Soon!';
-                } else {
-                    status = '⏳ In progress';
-                }
-                const formattedDeadline = new Intl.DateTimeFormat('default', {
-                    dateStyle: 'medium',
-                    timeStyle: 'short'
-                }).format(deadline);
-                card.innerHTML = `
-                    <h3>${assign.subject}</h3>
-                    <p class="deadline">Deadline: ${formattedDeadline}</p>
-                    <p>${assign.context}</p>
-                    <p>${status}</p>
-                    <label><input type="checkbox" class="checkbox" ${assign.done ? 'checked' : ''} onchange="toggleDone(${index})"> Mark as Done</label>
-                `;
-                list.appendChild(card);
-            });
-        }
-
-        function toggleDone(index) {
-            assignments[index].done = !assignments[index].done;
-            localStorage.setItem('assignments', JSON.stringify(assignments));
-            loadAssignments();
-            if (assignments[index].done) {
-                speak('Yay! Great job completing that! 🎉', 'Shab');
-            }
-        }
-
-        function checkReminders() {
-            const now = new Date();
-            assignments.forEach(assign => {
-                if (!assign.done) {
-                    const deadline = new Date(assign.deadline);
-                    const timeLeft = deadline - now;
-                    if (timeLeft > 0 && timeLeft < 3600000) { // 1 hour
-                        speak(`Reminder: ${assign.subject} is due soon! ⏰`, 'Alex');
-                    }
-                }
-            });
-        }
-
-        // Messaging
-        document.getElementById('open-message').addEventListener('click', function() {
-            document.getElementById('message-form').style.display = 'block';
-            this.style.display = 'none';
-        });
-
-        document.getElementById('message-form').addEventListener('submit', function() {
-            speak('Thanks for your message! I\'ll get back to you soon! 💌', 'Alex');
-            setTimeout(() => { this.style.display = 'none'; document.getElementById('open-message').style.display = 'block'; }, 2000);
-        });
-
-        // Photo
-        function loadPhoto() {
-            const fileInput = document.getElementById('photo-upload');
-            const urlInput = document.getElementById('photo-url');
-            const preview = document.getElementById('photo-preview');
-            const img = document.getElementById('preview-img');
-
-            if (fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    img.src = e.target.result;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else if (urlInput.value) {
-                img.src = urlInput.value;
-                preview.style.display = 'block';
-            }
-        }
-
-        // Game
-        function initGame() {
-            const canvas = document.getElementById('game-canvas');
-            const ctx = canvas.getContext('2d');
-            let animationId;
-
-            function draw() {
-                // Clear
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Bunny
-                ctx.fillStyle = '#ff69b4';
-                ctx.beginPath();
-                ctx.arc(gameBunny.x, gameBunny.y, 15, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Bunny face details
-                ctx.fillStyle = '#000';
-                ctx.beginPath();
-                ctx.arc(gameBunny.x - 5, gameBunny.y - 3, 3, 0, Math.PI * 2);
-                ctx.arc(gameBunny.x + 5, gameBunny.y - 3, 3, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Bunny mouth
-                ctx.beginPath();
-                ctx.arc(gameBunny.x, gameBunny.y + 3, 5, 0, Math.PI);
-                ctx.stroke();
-
-                // Carrots
-                ctx.fillStyle = 'orange';
-                gameCarrots.forEach(carrot => {
-                    ctx.beginPath();
-                    ctx.moveTo(carrot.x, carrot.y - 8);
-                    ctx.lineTo(carrot.x - 5, carrot.y + 8);
-                    ctx.lineTo(carrot.x + 5, carrot.y + 8);
-                    ctx.closePath();
-                    ctx.fill();
-                    
-                    // Carrot stem
-                    ctx.fillStyle = 'green';
-                    ctx.beginPath();
-                    ctx.moveTo(carrot.x, carrot.y - 8);
-                    ctx.lineTo(carrot.x - 3, carrot.y - 14);
-                    ctx.lineTo(carrot.x + 3, carrot.y - 14);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.fillStyle = 'orange';
-                });
-
-                // Draw next frame
-                animationId = requestAnimationFrame(draw);
-            }
-
-            function update() {
-                // Move bunny
-                gameBunny.x += gameBunny.vx;
-                gameBunny.y += gameBunny.vy;
-                
-                // Bounce off walls
-                if (gameBunny.x <= 15 || gameBunny.x >= canvas.width - 15) gameBunny.vx *= -1;
-                if (gameBunny.y <= 15 || gameBunny.y >= canvas.height - 15) gameBunny.vy *= -1;
-                
-                // Move carrots randomly
-                gameCarrots.forEach(carrot => {
-                    carrot.x += carrot.vx;
-                    carrot.y += carrot.vy;
-                    
-                    // Check if out of bounds
-                    if (carrot.x < 0 || carrot.x > canvas.width || 
-                        carrot.y < 0 || carrot.y > canvas.height) {
-                        carrot.active = false;
-                    }
-                    
-                    // Check collision with bunny
-                    const dx = carrot.x - gameBunny.x;
-                    const dy = carrot.y - gameBunny.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < 23 && carrot.active) {
-                        carrot.active = false;
-                        score++;
-                        document.getElementById('score').textContent = score;
-                        speak('Yum! Thanks for the carrot! 🥕', 'Alex');
-                    }
-                });
-                
-                // Remove inactive carrots
-                gameCarrots = gameCarrots.filter(carrot => carrot.active);
-                
-                // Add new carrot occasionally
-                if (Math.random() < 0.02) {
-                    gameCarrots.push({
-                        x: Math.random() * canvas.width,
-                        y: 0,
-                        vx: (Math.random() - 0.5) * 2,
-                        vy: Math.random() * 2 + 1,
-                        active: true
-                    });
-                }
-            }
-
-            function gameLoop() {
-                update();
-                draw();
-            }
-
-            // Start game loop
-            draw();
-            setInterval(update, 1000/60);
-
-            // Handle clicks/taps
-            canvas.addEventListener('click', function(e) {
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                // Add a new carrot at click position
-                gameCarrots.push({
-                    x: x,
-                    y: y,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: -2, // Move upward
-                    active: true
-                });
-            });
-
-            // Touch support for mobile
-            canvas.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                const rect = canvas.getBoundingClientRect();
-                const x = e.touches[0].clientX - rect.left;
-                const y = e.touches[0].clientY - rect.top;
-                
-                // Add a new carrot at touch position
-                gameCarrots.push({
-                    x: x,
-                    y: y,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: -2, // Move upward
-                    active: true
-                });
-            }, { passive: false });
-        }
-
-        // Clock
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString();
-        }
-
-        // Quotes
-        function changeQuote() {
-            document.getElementById('quote').textContent = quotes[currentQuote];
-            currentQuote = (currentQuote + 1) % quotes.length;
-        }
-
-        // Dark mode toggle
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-    </script>
-</body>
-</html>
+            update
