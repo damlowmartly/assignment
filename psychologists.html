@@ -487,11 +487,28 @@
     </div>
 
     <script>
-        // Use in-memory storage for all data
-        let moodData = [];
-        let thoughtRecords = [];
-        let goals = [];
-        let gratitudeEntries = [];
+        // Use localStorage for persistent data storage
+        let moodData = JSON.parse(localStorage.getItem('psychToolkit_moodData')) || [];
+        let thoughtRecords = JSON.parse(localStorage.getItem('psychToolkit_thoughtRecords')) || [];
+        let goals = JSON.parse(localStorage.getItem('psychToolkit_goals')) || [];
+        let gratitudeEntries = JSON.parse(localStorage.getItem('psychToolkit_gratitudeEntries')) || [];
+
+        // Helper functions to save data to localStorage
+        function saveMoodData() {
+            localStorage.setItem('psychToolkit_moodData', JSON.stringify(moodData));
+        }
+
+        function saveThoughtRecordsData() {
+            localStorage.setItem('psychToolkit_thoughtRecords', JSON.stringify(thoughtRecords));
+        }
+
+        function saveGoalsData() {
+            localStorage.setItem('psychToolkit_goals', JSON.stringify(goals));
+        }
+
+        function saveGratitudeData() {
+            localStorage.setItem('psychToolkit_gratitudeEntries', JSON.stringify(gratitudeEntries));
+        }
 
         function toggleTool(toolId) {
             const tool = document.getElementById(toolId);
@@ -531,6 +548,7 @@
             };
             
             moodData.push(moodEntry);
+            saveMoodData(); // Save to localStorage
             updateMoodHistory();
             
             // Reset form
@@ -643,6 +661,7 @@
             };
             
             thoughtRecords.push(record);
+            saveThoughtRecordsData(); // Save to localStorage
             updateThoughtHistory();
             
             // Reset form
@@ -731,6 +750,7 @@
             };
             
             goals.push(goal);
+            saveGoalsData(); // Save to localStorage
             updateGoalsList();
             goalInput.value = '';
         }
@@ -739,12 +759,14 @@
             const goal = goals.find(g => g.id === goalId);
             if (goal) {
                 goal.completed = !goal.completed;
+                saveGoalsData(); // Save to localStorage
                 updateGoalsList();
             }
         }
 
         function deleteGoal(goalId) {
             goals = goals.filter(g => g.id !== goalId);
+            saveGoalsData(); // Save to localStorage
             updateGoalsList();
         }
 
@@ -785,6 +807,7 @@
             };
             
             gratitudeEntries.push(gratitudeEntry);
+            saveGratitudeData(); // Save to localStorage
             updateGratitudeHistory();
             document.getElementById('gratitude-entry').value = '';
             
@@ -809,7 +832,26 @@
         window.onload = function() {
             // Initialize all lists
             updateGoalsList();
+            updateMoodHistory();
+            updateThoughtHistory();
+            updateGratitudeHistory();
+            updateDataStatus();
         };
+
+        // Function to show data status
+        function updateDataStatus() {
+            const totalEntries = moodData.length + thoughtRecords.length + goals.length + gratitudeEntries.length;
+            const statusDiv = document.getElementById('data-status');
+            if (statusDiv) {
+                statusDiv.innerHTML = `
+                    <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px; margin: 10px 0; color: #666;">
+                        <strong>Your Progress:</strong> ${totalEntries} total entries stored locally in your browser<br>
+                        <small>Mood: ${moodData.length} | Thoughts: ${thoughtRecords.length} | Goals: ${goals.length} | Gratitude: ${gratitudeEntries.length}</small><br>
+                        <small style="color: #999;">Last updated: ${new Date().toLocaleString()}</small>
+                    </div>
+                `;
+            }
+        }
 
         // Utility function to format date
         function formatDate(date) {
@@ -978,12 +1020,16 @@
         // Add export button to footer
         const exportButton = document.createElement('div');
         exportButton.innerHTML = `
+            <div id="data-status"></div>
             <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
                 <button onclick="exportData()" style="background: #28a745; margin-right: 10px;">
                     📊 Export Data for Therapist
                 </button>
                 <button onclick="clearAllData()" style="background: #dc3545;">
                     🗑️ Clear All Data
+                </button>
+                <button onclick="updateDataStatus()" style="background: #17a2b8; margin-left: 10px;">
+                    🔄 Refresh Status
                 </button>
             </div>
         `;
@@ -992,10 +1038,17 @@
         // Clear all data function
         function clearAllData() {
             if (confirm('Are you sure you want to clear all your data? This cannot be undone.')) {
+                // Clear in-memory data
                 moodData = [];
                 thoughtRecords = [];
                 goals = [];
                 gratitudeEntries = [];
+                
+                // Clear localStorage
+                localStorage.removeItem('psychToolkit_moodData');
+                localStorage.removeItem('psychToolkit_thoughtRecords');
+                localStorage.removeItem('psychToolkit_goals');
+                localStorage.removeItem('psychToolkit_gratitudeEntries');
                 
                 // Update displays
                 updateMoodHistory();
@@ -1003,7 +1056,7 @@
                 updateGoalsList();
                 updateGratitudeHistory();
                 
-                alert('All data has been cleared.');
+                alert('All data has been cleared from your browser storage.');
             }
         }
     </script>
