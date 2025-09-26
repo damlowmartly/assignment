@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+       
+                <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -580,6 +581,12 @@
             0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
             50% { transform: scale(1) rotate(180deg); opacity: 1; }
         }
+
+        @keyframes celebration {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.5) rotate(180deg); opacity: 0.8; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -783,6 +790,101 @@
             });
         }
 
+        // Enhanced draggable - characters can be dragged anywhere on the page
+        function initDraggableEverywhere() {
+            const containers = document.querySelectorAll('.character-container');
+            let draggedElement = null;
+            let offset = { x: 0, y: 0 };
+            let isDragging = false;
+
+            function handleStart(e, el) {
+                isDragging = false;
+                draggedElement = el;
+                const rect = el.getBoundingClientRect();
+                
+                if (e.type === 'touchstart') {
+                    offset.x = e.touches[0].clientX - rect.left;
+                    offset.y = e.touches[0].clientY - rect.top;
+                } else {
+                    offset.x = e.clientX - rect.left;
+                    offset.y = e.clientY - rect.top;
+                    e.preventDefault();
+                }
+                
+                el.style.zIndex = '1000';
+                el.style.position = 'fixed';
+                el.style.pointerEvents = 'none';
+                document.body.style.userSelect = 'none';
+            }
+
+            function handleMove(e) {
+                if (!draggedElement) return;
+                
+                isDragging = true;
+                let clientX, clientY;
+                
+                if (e.type === 'touchmove') {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                    e.preventDefault();
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                const newX = clientX - offset.x;
+                const newY = clientY - offset.y;
+                
+                // Keep within viewport bounds
+                const maxX = window.innerWidth - draggedElement.offsetWidth;
+                const maxY = window.innerHeight - draggedElement.offsetHeight;
+                
+                draggedElement.style.left = Math.max(0, Math.min(newX, maxX)) + 'px';
+                draggedElement.style.top = Math.max(0, Math.min(newY, maxY)) + 'px';
+            }
+
+            function handleEnd(e) {
+                if (draggedElement) {
+                    draggedElement.style.zIndex = '10';
+                    draggedElement.style.pointerEvents = 'auto';
+                    document.body.style.userSelect = '';
+                    
+                    // If it was just a click (not a drag), trigger the click event
+                    if (!isDragging && e.type !== 'touchend') {
+                        const characterEl = draggedElement.querySelector('.character');
+                        if (characterEl) {
+                            characterEl.click();
+                        }
+                    }
+                    
+                    draggedElement = null;
+                    isDragging = false;
+                }
+            }
+
+            containers.forEach(el => {
+                // Mouse events
+                el.addEventListener('mousedown', (e) => handleStart(e, el));
+                
+                // Touch events
+                el.addEventListener('touchstart', (e) => handleStart(e, el), { passive: false });
+
+                // Prevent click from firing during drag
+                el.addEventListener('click', (e) => {
+                    if (isDragging) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+            });
+
+            // Global move and end events
+            document.addEventListener('mousemove', handleMove);
+            document.addEventListener('touchmove', handleMove, { passive: false });
+            document.addEventListener('mouseup', handleEnd);
+            document.addEventListener('touchend', handleEnd);
+        }
+
         // Enhanced load function
         window.onload = function() {
             createParticles();
@@ -792,4 +894,238 @@
             setTimeout(() => speak('🚀 And I\'m Shab! Ready to make today incredible? ⭐', 'Shab'), 2500);
             
             loadAssignments();
-            update
+            updateClock();
+            setInterval(updateClock, 1000);
+            setInterval(checkReminders, 60000);
+            changeQuote();
+            setInterval(changeQuote, 30000);
+            initGame();
+            initDraggableEverywhere();
+            initCharacterInteractions();
+        };
+       // Enhanced Game
+        function initGame() {
+            const canvas = document.getElementById('game-canvas');
+            const ctx = canvas.getContext('2d');
+            let gameRunning = true;
+
+            function draw() {
+                if (!gameRunning) return;
+                
+                // Clear with gradient background
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                gradient.addColorStop(0, '#87CEEB');
+                gradient.addColorStop(1, '#E0F6FF');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Enhanced Bunny
+                ctx.save();
+                ctx.translate(gameBunny.x, gameBunny.y);
+                
+                // Bunny body
+                ctx.fillStyle = '#FFB6C1';
+                ctx.beginPath();
+                ctx.arc(0, 0, gameBunny.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Bunny ears
+                ctx.fillStyle = '#FF69B4';
+                ctx.beginPath();
+                ctx.ellipse(-8, -15, 4, 8, 0, 0, Math.PI * 2);
+                ctx.ellipse(8, -15, 4, 8, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Bunny eyes
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(-6, -5, 3, 0, Math.PI * 2);
+                ctx.arc(6, -5, 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Bunny nose
+                ctx.fillStyle = '#FF1493';
+                ctx.beginPath();
+                ctx.arc(0, 0, 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Bunny mouth
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(0, 5, 6, 0, Math.PI);
+                ctx.stroke();
+                
+                ctx.restore();
+
+                // Enhanced Carrots
+                gameCarrots.forEach(carrot => {
+                    if (!carrot.active) return;
+                    
+                    ctx.save();
+                    ctx.translate(carrot.x, carrot.y);
+                    ctx.rotate(carrot.rotation || 0);
+                    
+                    // Carrot body
+                    ctx.fillStyle = '#FF8C00';
+                    ctx.beginPath();
+                    ctx.moveTo(0, -12);
+                    ctx.lineTo(-6, 12);
+                    ctx.lineTo(6, 12);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Carrot leaves
+                    ctx.fillStyle = '#228B22';
+                    ctx.beginPath();
+                    ctx.moveTo(0, -12);
+                    ctx.lineTo(-4, -20);
+                    ctx.lineTo(-1, -18);
+                    ctx.lineTo(1, -18);
+                    ctx.lineTo(4, -20);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    ctx.restore();
+                });
+
+                requestAnimationFrame(draw);
+            }
+
+            function update() {
+                if (!gameRunning) return;
+                
+                // Move bunny with bouncing
+                gameBunny.x += gameBunny.vx;
+                gameBunny.y += gameBunny.vy;
+                
+                // Bounce off walls
+                if (gameBunny.x <= gameBunny.size || gameBunny.x >= canvas.width - gameBunny.size) {
+                    gameBunny.vx *= -1;
+                }
+                if (gameBunny.y <= gameBunny.size || gameBunny.y >= canvas.height - gameBunny.size) {
+                    gameBunny.vy *= -1;
+                }
+                
+                // Update carrots
+                gameCarrots.forEach(carrot => {
+                    if (!carrot.active) return;
+                    
+                    carrot.x += carrot.vx;
+                    carrot.y += carrot.vy;
+                    carrot.vy += 0.1; // Gravity
+                    carrot.rotation = (carrot.rotation || 0) + 0.1;
+                    
+                    // Remove if out of bounds
+                    if (carrot.x < -20 || carrot.x > canvas.width + 20 || 
+                        carrot.y < -20 || carrot.y > canvas.height + 20) {
+                        carrot.active = false;
+                    }
+                    
+                    // Check collision with bunny
+                    const dx = carrot.x - gameBunny.x;
+                    const dy = carrot.y - gameBunny.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < gameBunny.size + 15 && carrot.active) {
+                        carrot.active = false;
+                        score++;
+                        document.getElementById('score').textContent = score;
+                        
+                        // Achievement milestones
+                        if (score % 10 === 0) {
+                            showAchievement(`${score} Carrots Fed!`);
+                            speak(`🏆 Wow! ${score} carrots! The bunny loves you! 🥕`, 'Shab');
+                        } else if (score % 5 === 0) {
+                            speak('🥕 Yummy! More carrots please! 🐰', 'Alex');
+                        }
+                        
+                        // Create eating effect
+                        createEatingEffect(gameBunny.x, gameBunny.y);
+                    }
+                });
+                
+                // Remove inactive carrots
+                gameCarrots = gameCarrots.filter(carrot => carrot.active);
+            }
+
+            function createEatingEffect(x, y) {
+                const eatEmojis = ['💫', '✨', '🌟', '💖'];
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        const effect = document.createElement('div');
+                        effect.style.position = 'fixed';
+                        const rect = canvas.getBoundingClientRect();
+                        effect.style.left = (rect.left + x + Math.random() * 40 - 20) + 'px';
+                        effect.style.top = (rect.top + y + Math.random() * 40 - 20) + 'px';
+                        effect.style.fontSize = '20px';
+                        effect.style.zIndex = '1000';
+                        effect.style.pointerEvents = 'none';
+                        effect.textContent = eatEmojis[Math.floor(Math.random() * eatEmojis.length)];
+                        effect.style.animation = 'sparkle 1s ease-out forwards';
+                        document.body.appendChild(effect);
+                        
+                        setTimeout(() => {
+                            if (effect.parentNode) {
+                                effect.parentNode.removeChild(effect);
+                            }
+                        }, 1000);
+                    }, i * 100);
+                }
+            }
+
+            // Handle clicks/taps to create carrots
+            function createCarrot(x, y) {
+                const rect = canvas.getBoundingClientRect();
+                const canvasX = x - rect.left;
+                const canvasY = y - rect.top;
+                
+                gameCarrots.push({
+                    x: canvasX,
+                    y: canvasY,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: Math.random() * -3 - 2,
+                    rotation: 0,
+                    active: true
+                });
+            }
+
+            // Mouse and touch events
+            canvas.addEventListener('click', function(e) {
+                createCarrot(e.clientX, e.clientY);
+            });
+
+            canvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                if (e.touches.length > 0) {
+                    createCarrot(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: false });
+
+            // Start game loops
+            draw();
+            setInterval(update, 1000/60); // 60 FPS
+        }
+
+        // Clock with enhanced styling
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('clock').textContent = `🕐 ${timeString}`;
+        }
+
+        // Enhanced quotes with more variety
+        function changeQuote() {
+            document.getElementById('quote').textContent = quotes[currentQuote];
+            currentQuote = (currentQuote + 1) % quotes.length;
+        }
+
+        // Dark mode toggle with smooth transitions
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            speak(isDark ? '🌙 Dark mode activated! Cozy vibes! ✨' : '☀️ Light mode activated! Bright and cheerful! 🌸', 'Alex');
+        }
+    </script>
+</body>
+</html>
