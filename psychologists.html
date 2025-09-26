@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychology Client Toolkit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        .disclaimer {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .disclaimer h3 {
+            color: #d63031;
+            margin-bottom: 10px;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid #667eea;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .tool-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-icon {
+            font-size: 1.5em;
+        }
+
+        .tool-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .tool-content {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tool-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mood-tracker {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .mood-day {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            background: white;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mood-day:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .mood-scale {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 0 10px;
+        }
+
+        .mood-option {
+            text-align: center;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            font-size: 2em;
+        }
+
+        .mood-option:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+        }
+
+        .mood-option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        textarea, input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            margin: 10px 0;
+        }
+
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            border: 4px solid #667eea;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .breathing-circle.inhale {
+            transform: scale(1.3);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .breathing-circle.exhale {
+            transform: scale(0.8);
+            background: rgba(118, 75, 162, 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .thought-record {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .coping-strategies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .strategy-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .goals-list {
+            list-style: none;
+        }
+
+        .goals-list li {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+            background: #d4edda !important;
+            border-left-color: #28a745 !important;
+        }
+
+        .crisis-resources {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .crisis-resources h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .crisis-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mood-tracker {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .mood-scale {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .breathing-circle {
+                width: 150px;
+                height: 150px;
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Psychology Client Toolkit</h1>
+            <p class="subtitle">Evidence-based tools for mental health and wellbeing</p>
+        </header>
+
+        <div class="disclaimer">
+            <h3>⚠️ Important Notice</h3>
+            <p><strong>This toolkit is designed to complement professional therapy, not replace it.</strong> These tools are based on established psychological techniques but should be used alongside regular consultation with a qualified mental health professional. If you're experiencing a mental health crisis, please contact emergency services or a crisis hotline immediately.</p>
+        </div>
+
+        <div class="tool-grid">
+            <!-- Mood Tracker -->
+            <div class="tool-card">
+                <h3><span class="tool-icon">📊</span>Mood Tracker</h3>
+                <p>Track your daily mood patterns to identify triggers and trends over time. Regular mood monitoring can help you and your therapist understand your emotional patterns.</p>
+                <button onclick="toggleTool('mood-tracker')">Open Mood Tracker</button>
+                
+                <div id="mood-tracker" class="tool-content">
+                    <h4>How are you feeling today?</h4>
+                    <div class="mood-scale">
+                        <div class="mood-option" data-mood="1" onclick="selectMood(1)">😢<br>Very Low</div>
+                        <div class="mood-option" data-mood="2" onclick="selectMood(2)">😔<br>Low</div>
+                        <div class="mood-option" data-mood="3" onclick="selectMood(3)">😐<br>Neutral</div>
+                        <div class="mood-option" data-mood="4" onclick="selectMood(4)">🙂<br>Good</div>
+                        <div class="mood-option" data-mood="5" onclick="selectMood(5)">😊<br>Great</div>
+                    </div>
+                    <textarea id="mood-notes" placeholder="What contributed to this mood? Any specific events or thoughts?"></textarea>
+                    <button onclick="saveMood()">Save Today's Mood</button>
+                    <div id="mood-history"></div>
+                </div>
+            </div>
+
+            <!-- Breathing Exercise -->
+            <div class="tool-card">
+                <h3><span class="tool-icon">🫁</span>Breathing Exercise</h3>
+                <p>Practice the 4-7-8 breathing technique to reduce anxiety and promote relaxation. This evidence-based technique activates your parasympathetic nervous system.</p>
+                <button onclick="toggleTool('breathing-exercise')">Start Breathing Exercise</button>
+                
+                <div id="breathing-exercise" class="tool-content">
+                    <div class="breathing-circle" id="breathing-circle">Ready</div>
+                    <div style="text-align: center;">
+                        <button onclick="startBreathing()" id="breath-button">Start Exercise</button>
+                        <p id="breath-instruction">Click start when you're ready to begin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thought Record -->
+            <div class="tool-card">
+                <h3><span class="tool-icon">💭</span>Thought Record</h3>
+                <p>Challenge negative thinking patterns using cognitive behavioral therapy techniques. This helps identify and reframe unhelpful thoughts.</p>
+                <button onclick="toggleTool('thought-record')">Open Thought Record</button>
+                
+                <div id="thought-record" class="tool-content">
+                    <h4>Capture and Challenge Your Thoughts</h4>
+                    <input type="text" id="situation" placeholder="What situation triggered this thought?">
+                    <textarea id="automatic-thought" placeholder="What automatic thought went through your mind?"></textarea>
+                    <input type="range" id="emotion-intensity" min="1" max="10" value="5">
+                    <label>Emotion intensity: <span id="intensity-value">5</span>/10</label>
+                    <textarea id="evidence-for" placeholder="What evidence supports this thought?"></textarea>
+                    <textarea id="evidence-against" placeholder="What evidence challenges this thought?"></textarea>
+                    <textarea id="balanced-thought" placeholder="What would be a more balanced way to think about this?"></textarea>
+                    <button onclick="saveThoughtRecord()">Save Thought Record</button>
+                    <div id="thought-history"></div>
+                </div>
+            </div>
+
+            <!-- Coping Strategies -->
+            <div class="tool-card">
+                <h3><span class="tool-icon">🛠️</span>Coping Strategies</h3>
+                <p>Quick access to healthy coping mechanisms when you're feeling overwhelmed. Build your personal toolkit of effective strategies.</p>
+                <button onclick="toggleTool('coping-strategies')">View Coping Strategies</button>
+                
+                <div id="coping-strategies" class="tool-content">
+                    <h4>Choose a coping strategy that feels right for you now:</h4>
+                    <div class="coping-strategies">
+                        <div class="strategy-card" onclick="showStrategy('grounding')">
+                            5-4-3-2-1 Grounding
+                        </div>
+                        <div class="strategy-card" onclick="showStrategy('progressive')">
+                            Progressive Muscle Relaxation
+                        </div>
+                        <div class="strategy-card" onclick="showStrategy('mindfulness')">
+                            Mindfulness Moment
+                        </div>
+                        <div class="strategy-card" onclick="showStrategy('distraction')">
+                            Healthy Distraction
+                        </div>
+                        <div class="strategy-card" onclick="showStrategy('social')">
+                            Social Connection
+                        </div>
+                        <div class="strategy-card" onclick="showStrategy('physical')">
+                            Physical Activity
+                        </div>
+                    </div>
+                    <div id="strategy-details"></div>
+                </div>
+            </div>
+
+            <!-- Goal Setting -->
+            <div class="tool-card">
+                <h3><span class="tool-icon">🎯</span>Goal Setting</h3>
+                <p>Set and track SMART goals for your mental health journey. Breaking down larger goals into manageable steps increases success rates.</p>
+                <button onclick="toggleTool('goal-setting')">Open Goal Setting</button>
+                
+                <div id="goal-setting" class="tool-content">
+                    <h4>Set Your Mental Health Goals</h4>
+                    <input type="text" id="goal-input" placeholder="Enter a specific, measurable goal...">
+                    <button onclick="addGoal()">Add Goal</button>
+                    <ul id="goals-list" class="goals-list"></ul>
+                </div>
+            </div>
+
+            <!-- Gratitude Journal -->
+            <div class="tool-card">
+                <h3><span class="tool-icon">🙏</span>Gratitude Journal</h3>
+                <p>Research shows that regular gratitude practice can significantly improve mood and overall wellbeing. Start with just three things daily.</p>
+                <button onclick="toggleTool('gratitude-journal')">Open Gratitude Journal</button>
+                
+                <div id="gratitude-journal" class="tool-content">
+                    <h4>What are you grateful for today?</h4>
+                    <textarea id="gratitude-entry" placeholder="Write about three things you're grateful for and why..."></textarea>
+                    <button onclick="saveGratitude()">Save Entry</button>
+                    <div id="gratitude-history"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="crisis-resources">
+            <h3>🚨 Crisis Resources</h3>
+            <p>If you're in immediate danger or having thoughts of self-harm:</p>
+            <div class="crisis-number">988</div>
+            <p>Suicide & Crisis Lifeline (US) - Available 24/7</p>
+            <p><strong>International:</strong> Contact your local emergency services or visit findahelpline.com</p>
+            <p><strong>Remember:</strong> You are not alone, and help is available</p>
+        </div>
+    </div>
+
+    <script>
+        // Use in-memory storage for all data
+        let moodData = [];
+        let thoughtRecords = [];
+        let goals = [];
+        let gratitudeEntries = [];
+
+        function toggleTool(toolId) {
+            const tool = document.getElementById(toolId);
+            const isActive = tool.classList.contains('active');
+            
+            // Close all tools
+            document.querySelectorAll('.tool-content').forEach(t => t.classList.remove('active'));
+            
+            // Open requested tool if it wasn't already active
+            if (!isActive) {
+                tool.classList.add('active');
+            }
+        }
+
+        // Mood Tracker Functions
+        function selectMood(mood) {
+            document.querySelectorAll('.mood-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
+        }
+
+        function saveMood() {
+            const selectedMood = document.querySelector('.mood-option.selected');
+            const notes = document.getElementById('mood-notes').value;
+            
+            if (!selectedMood) {
+                alert('Please select a mood level first');
+                return;
+            }
+            
+            const moodEntry = {
+                date: new Date().toDateString(),
+                mood: selectedMood.dataset.mood,
+                notes: notes,
+                timestamp: new Date().toISOString()
+            };
+            
+            moodData.push(moodEntry);
+            updateMoodHistory();
+            
+            // Reset form
+            document.querySelectorAll('.mood-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.getElementById('mood-notes').value = '';
+            
+            alert('Mood saved! Keep tracking to see patterns over time.');
+        }
+
+        function updateMoodHistory() {
+            const historyDiv = document.getElementById('mood-history');
+            if (moodData.length === 0) return;
+            
+            const recentEntries = moodData.slice(-5).reverse();
+            historyDiv.innerHTML = '<h5>Recent Entries:</h5>' + 
+                recentEntries.map(entry => `
+                    <div class="thought-record">
+                        <strong>${entry.date}</strong> - Mood: ${entry.mood}/5<br>
+                        ${entry.notes ? `<em>${entry.notes}</em>` : '<em>No notes</em>'}
+                    </div>
+                `).join('');
+        }
+
+        // Breathing Exercise Functions
+        let breathingActive = false;
+        let breathingInterval;
+
+        function startBreathing() {
+            if (breathingActive) {
+                stopBreathing();
+                return;
+            }
+            
+            breathingActive = true;
+            document.getElementById('breath-button').textContent = 'Stop Exercise';
+            
+            let phase = 0; // 0: inhale, 1: hold, 2: exhale, 3: hold
+            let count = 0;
+            const phases = [4, 7, 8, 2]; // 4-7-8-2 breathing pattern
+            const phaseNames = ['Inhale', 'Hold', 'Exhale', 'Hold'];
+            
+            const circle = document.getElementById('breathing-circle');
+            const instruction = document.getElementById('breath-instruction');
+            
+            function breathingCycle() {
+                if (!breathingActive) return;
+                
+                count++;
+                circle.textContent = count;
+                instruction.textContent = `${phaseNames[phase]} (${count}/${phases[phase]})`;
+                
+                if (phase === 0) { // Inhale
+                    circle.classList.add('inhale');
+                    circle.classList.remove('exhale');
+                } else if (phase === 2) { // Exhale
+                    circle.classList.add('exhale');
+                    circle.classList.remove('inhale');
+                } else { // Hold
+                    circle.classList.remove('inhale', 'exhale');
+                }
+                
+                if (count >= phases[phase]) {
+                    count = 0;
+                    phase = (phase + 1) % 4;
+                }
+            }
+            
+            breathingCycle();
+            breathingInterval = setInterval(breathingCycle, 1000);
+        }
+
+        function stopBreathing() {
+            breathingActive = false;
+            clearInterval(breathingInterval);
+            document.getElementById('breath-button').textContent = 'Start Exercise';
+            document.getElementById('breathing-circle').textContent = 'Ready';
+            document.getElementById('breath-instruction').textContent = 'Click start when you\'re ready to begin';
+            document.getElementById('breathing-circle').classList.remove('inhale', 'exhale');
+        }
+
+        // Thought Record Functions
+        document.getElementById('emotion-intensity').addEventListener('input', function() {
+            document.getElementById('intensity-value').textContent = this.value;
+        });
+
+        function saveThoughtRecord() {
+            const situation = document.getElementById('situation').value;
+            const thought = document.getElementById('automatic-thought').value;
+            const intensity = document.getElementById('emotion-intensity').value;
+            const evidenceFor = document.getElementById('evidence-for').value;
+            const evidenceAgainst = document.getElementById('evidence-against').value;
+            const balancedThought = document.getElementById('balanced-thought').value;
+            
+            if (!situation || !thought) {
+                alert('Please fill in at least the situation and automatic thought');
+                return;
+            }
+            
+            const record = {
+                date: new Date().toDateString(),
+                situation,
+                thought,
+                intensity,
+                evidenceFor,
+                evidenceAgainst,
+                balancedThought,
+                timestamp: new Date().toISOString()
+            };
+            
+            thoughtRecords.push(record);
+            updateThoughtHistory();
+            
+            // Reset form
+            document.getElementById('situation').value = '';
+            document.getElementById('automatic-thought').value = '';
+            document.getElementById('emotion-intensity').value = '5';
+            document.getElementById('intensity-value').textContent = '5';
+            document.getElementById('evidence-for').value = '';
+            document.getElementById('evidence-against').value = '';
+            document.getElementById('balanced-thought').value = '';
+            
+            alert('Thought record saved! Review your entries to identify patterns.');
+        }
+
+        function updateThoughtHistory() {
+            const historyDiv = document.getElementById('thought-history');
+            if (thoughtRecords.length === 0) return;
+            
+            const recentRecords = thoughtRecords.slice(-3).reverse();
+            historyDiv.innerHTML = '<h5>Recent Thought Records:</h5>' + 
+                recentRecords.map(record => `
+                    <div class="thought-record">
+                        <strong>${record.date}</strong><br>
+                        <strong>Situation:</strong> ${record.situation}<br>
+                        <strong>Thought:</strong> ${record.thought}<br>
+                        ${record.balancedThought ? `<strong>Balanced thought:</strong> ${record.balancedThought}` : ''}
+                    </div>
+                `).join('');
+        }
+
+        // Coping Strategies Functions
+        const strategies = {
+            grounding: {
+                title: "5-4-3-2-1 Grounding Technique",
+                content: "Look around and identify:<br>• 5 things you can see<br>• 4 things you can touch<br>• 3 things you can hear<br>• 2 things you can smell<br>• 1 thing you can taste<br><br>This helps bring you back to the present moment."
+            },
+            progressive: {
+                title: "Progressive Muscle Relaxation",
+                content: "Starting with your toes, tense each muscle group for 5 seconds, then relax for 10 seconds:<br>• Toes and feet<br>• Calves<br>• Thighs<br>• Abdomen<br>• Hands and arms<br>• Shoulders<br>• Face<br><br>Notice the difference between tension and relaxation."
+            },
+            mindfulness: {
+                title: "Mindfulness Moment",
+                content: "Take 3 minutes to:<br>• Sit comfortably and close your eyes<br>• Focus on your breath<br>• When thoughts arise, acknowledge them without judgment<br>• Gently return focus to your breathing<br><br>Remember: there's no 'perfect' way to meditate."
+            },
+            distraction: {
+                title: "Healthy Distraction",
+                content: "Choose an activity that fully engages your mind:<br>• Read a book or article<br>• Do a puzzle or crossword<br>• Listen to music<br>• Call a friend<br>• Take a shower<br>• Organize a small space<br><br>The goal is to shift your mental focus."
+            },
+            social: {
+                title: "Social Connection",
+                content: "Reach out to someone who cares about you:<br>• Call a friend or family member<br>• Text someone you haven't talked to lately<br>• Join an online community<br>• Attend a local event<br>• Volunteer for a cause you care about<br><br>Connection is a basic human need."
+            },
+            physical: {
+                title: "Physical Activity",
+                content: "Get your body moving to boost mood:<br>• Take a 10-minute walk<br>• Do jumping jacks or push-ups<br>• Dance to your favorite song<br>• Stretch or do yoga<br>• Clean or organize<br>• Go for a bike ride<br><br>Even light activity can help release endorphins."
+            }
+        };
+
+        function showStrategy(strategyKey) {
+            const strategy = strategies[strategyKey];
+            const detailsDiv = document.getElementById('strategy-details');
+            
+            detailsDiv.innerHTML = `
+                <div class="thought-record">
+                    <h4>${strategy.title}</h4>
+                    <p>${strategy.content}</p>
+                </div>
+            `;
+        }
+
+        // Goal Setting Functions
+        function addGoal() {
+            const goalInput = document.getElementById('goal-input');
+            const goalText = goalInput.value.trim();
+            
+            if (!goalText) {
+                alert('Please enter a goal');
+                return;
+            }
+            
+            const goal = {
+                id: Date.now(),
+                text: goalText,
+                completed: false,
+                createdAt: new Date().toDateString()
+            };
+            
+            goals.push(goal);
+            updateGoalsList();
+            goalInput.value = '';
+        }
+
+        function toggleGoal(goalId) {
+            const goal = goals.find(g => g.id === goalId);
+            if (goal) {
+                goal.completed = !goal.completed;
+                updateGoalsList();
+            }
+        }
+
+        function deleteGoal(goalId) {
+            goals = goals.filter(g => g.id !== goalId);
+            updateGoalsList();
+        }
+
+        function updateGoalsList() {
+            const goalsList = document.getElementById('goals-list');
+            
+            if (goals.length === 0) {
+                goalsList.innerHTML = '<li style="text-align: center; color: #666;">No goals set yet. Start by adding your first goal above.</li>';
+                return;
+            }
+            
+            goalsList.innerHTML = goals.map(goal => `
+                <li class="${goal.completed ? 'completed' : ''}">
+                    <span>${goal.text}</span>
+                    <div>
+                        <button onclick="toggleGoal(${goal.id})" style="margin-right: 10px;">
+                            ${goal.completed ? 'Undo' : 'Complete'}
+                        </button>
+                        <button onclick="deleteGoal(${goal.id})" style="background: #ff6b6b;">Delete</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        // Gratitude Journal Functions
+        function saveGratitude() {
+            const entry = document.getElementById('gratitude-entry').value.trim();
+            
+            if (!entry) {
+                alert('Please write something you\'re grateful for');
+                return;
+            }
+            
+            const gratitudeEntry = {
+                date: new Date().toDateString(),
+                content: entry,
+                timestamp: new Date().toISOString()
+            };
+            
+            gratitudeEntries.push(gratitudeEntry);
+            updateGratitudeHistory();
+            document.getElementById('gratitude-entry').value = '';
+            
+            alert('Gratitude entry saved! Regular gratitude practice can improve your overall wellbeing.');
+        }
+
+        function updateGratitudeHistory() {
+            const historyDiv = document.getElementById('gratitude-history');
+            if (gratitudeEntries.length === 0) return;
+            
+            const recentEntries = gratitudeEntries.slice(-5).reverse();
+            historyDiv.innerHTML = '<h5>Recent Gratitude Entries:</h5>' + 
+                recentEntries.map(entry => `
+                    <div class="thought-record">
+                        <strong>${entry.date}</strong><br>
+                        <p>${entry.content}</p>
+                    </div>
+                `).join('');
+        }
+
+        // Initialize the app
+        window.onload = function() {
+            // Initialize all lists
+            updateGoalsList();
+        };
+
+        // Utility function to format date
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Add some helpful tips that appear periodically
+        const mentalHealthTips = [
+            "Remember: It's okay to not be okay sometimes. Healing is not linear.",
+            "Small steps forward are still progress. Celebrate your victories, no matter how small.",
+            "Your thoughts are not facts. Question negative thinking patterns.",
+            "Self-care isn't selfish - it's necessary for your wellbeing.",
+            "Connection with others is vital for mental health. Reach out when you need support.",
+            "Regular sleep, exercise, and nutrition significantly impact your mental health.",
+            "Mindfulness can help you stay grounded in the present moment.",
+            "It's brave to ask for help. Professional support can make a real difference."
+        ];
+
+        // Show a helpful tip every 5 minutes when the page is active
+        let tipIndex = 0;
+        function showTip() {
+            if (document.visibilityState === 'visible') {
+                const tip = mentalHealthTips[tipIndex % mentalHealthTips.length];
+                
+                // Create tip notification
+                const tipDiv = document.createElement('div');
+                tipDiv.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    max-width: 300px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease;
+                    font-size: 14px;
+                    line-height: 1.4;
+                `;
+                tipDiv.innerHTML = `
+                    <strong>💡 Mental Health Tip</strong><br>
+                    ${tip}
+                    <button onclick="this.parentElement.remove()" style="
+                        background: rgba(255,255,255,0.2);
+                        border: none;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 12px;
+                        margin-top: 10px;
+                        float: right;
+                    ">Close</button>
+                `;
+                
+                document.body.appendChild(tipDiv);
+                
+                // Auto-remove after 10 seconds
+                setTimeout(() => {
+                    if (tipDiv.parentElement) {
+                        tipDiv.remove();
+                    }
+                }, 10000);
+                
+                tipIndex++;
+            }
+        }
+
+        // Show first tip after 2 minutes, then every 5 minutes
+        setTimeout(showTip, 120000);
+        setInterval(showTip, 300000);
+
+        // Add CSS animation for tips
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Emergency contacts and resources data
+        const emergencyResources = {
+            us: {
+                suicide: "988",
+                crisis: "1-800-273-8255",
+                text: "Text HOME to 741741"
+            },
+            international: {
+                uk: "116 123 (Samaritans)",
+                canada: "1-833-456-4566",
+                australia: "13 11 14 (Lifeline)"
+            }
+        };
+
+        // Function to show emergency resources
+        function showEmergencyHelp() {
+            alert(`IMMEDIATE HELP AVAILABLE:\n\n` +
+                  `US: Call 988 (Suicide & Crisis Lifeline)\n` +
+                  `Crisis Text Line: Text HOME to 741741\n` +
+                  `International: Visit findahelpline.com\n\n` +
+                  `You are not alone. Professional help is available 24/7.`);
+        }
+
+        // Add emergency help button
+        const emergencyButton = document.createElement('div');
+        emergencyButton.innerHTML = `
+            <button onclick="showEmergencyHelp()" style="
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #ff6b6b;
+                color: white;
+                border: none;
+                padding: 15px 20px;
+                border-radius: 25px;
+                cursor: pointer;
+                font-weight: bold;
+                box-shadow: 0 5px 15px rgba(255,107,107,0.4);
+                z-index: 1000;
+                font-size: 14px;
+            ">
+                🆘 Emergency Help
+            </button>
+        `;
+        document.body.appendChild(emergencyButton);
+
+        // Data export functionality (for sharing with therapist)
+        function exportData() {
+            const data = {
+                exportDate: new Date().toISOString(),
+                moodData: moodData,
+                thoughtRecords: thoughtRecords,
+                goals: goals,
+                gratitudeEntries: gratitudeEntries
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `mental-health-data-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('Your data has been exported. You can share this file with your therapist to discuss your progress.');
+        }
+
+        // Add export button to footer
+        const exportButton = document.createElement('div');
+        exportButton.innerHTML = `
+            <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                <button onclick="exportData()" style="background: #28a745; margin-right: 10px;">
+                    📊 Export Data for Therapist
+                </button>
+                <button onclick="clearAllData()" style="background: #dc3545;">
+                    🗑️ Clear All Data
+                </button>
+            </div>
+        `;
+        document.querySelector('.container').insertBefore(exportButton, document.querySelector('.crisis-resources'));
+
+        // Clear all data function
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all your data? This cannot be undone.')) {
+                moodData = [];
+                thoughtRecords = [];
+                goals = [];
+                gratitudeEntries = [];
+                
+                // Update displays
+                updateMoodHistory();
+                updateThoughtHistory();
+                updateGoalsList();
+                updateGratitudeHistory();
+                
+                alert('All data has been cleared.');
+            }
+        }
+    </script>
+</body>
+</html>
