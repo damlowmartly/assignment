@@ -857,7 +857,7 @@
             loadAssignments();
             
             if (assignments[index].completed) {
-                speak('🎉 Awesome! Assignment completed! You\'re amazing! ✨', 'Lexy');
+                speak('🎉 Awesome! Assignment completed! You\'re amazing! ✨', 'Alex');
                 showAchievement('Assignment Completed!');
                 createCelebration();
                 achievementCount++;
@@ -871,7 +871,7 @@
             assignments.splice(index, 1);
             saveAssignments(); // Save to localStorage
             loadAssignments();
-            speak('🗑️ Assignment removed! Stay organized! ✨', 'Lexy');
+            speak('🗑️ Assignment removed! Stay organized! ✨', 'Alex);
         }
 
         function createCelebration() {
@@ -924,7 +924,7 @@
                 if (form.style.display === 'none') {
                     form.style.display = 'block';
                     openBtn.textContent = '❌ Close Message Portal';
-                    speak('💌 Message portal opened! Send me your thoughts! ✨', 'Lexy');
+                    speak('💌 Message portal opened! Send me your thoughts! ✨', 'Alex');
                 } else {
                     form.style.display = 'none';
                     openBtn.textContent = '💬 Open Message Portal';
@@ -949,7 +949,7 @@
                 reader.onload = function(e) {
                     img.src = e.target.result;
                     preview.style.display = 'block';
-                    speak('📸 Beautiful photo! A moment captured in time! ✨', 'Lexy');
+                    speak('📸 Beautiful photo! A moment captured in time! ✨', 'Alex');
                     showAchievement('Photo Loaded!');
                 };
                 reader.readAsDataURL(fileInput.files[0]);
@@ -973,7 +973,7 @@
                     "I believe in you completely! 💖",
                     "Let's make today magical! 🦄"
                 ];
-                speak(alexQuotes[Math.floor(Math.random() * alexQuotes.length)], 'Lexy');
+                speak(alexQuotes[Math.floor(Math.random() * alexQuotes.length)], 'Alex');
             });
             
             shab.addEventListener('click', () => {
@@ -1306,7 +1306,7 @@
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
-            speak(isDark ? '🌙 Dark mode activated! Cozy vibes! ✨' : '☀️ Light mode activated! Bright and cheerful! 🌸', 'Lexy');
+            speak(isDark ? '🌙 Dark mode activated! Cozy vibes! ✨' : '☀️ Light mode activated! Bright and cheerful! 🌸', 'Alex');
         }
 
         // Event listeners
@@ -1323,7 +1323,7 @@
             // Load saved score
             document.getElementById('score').textContent = score;
             
-            speak('✨ Welcome to your magical productivity hub! I\'m Alex! 🌸', 'Lexy');
+            speak('✨ Welcome to your magical productivity hub! I\'m Alex! 🌸', 'Alex');
             setTimeout(() => speak('🚀 And I\'m Shab! Ready to make today incredible? ⭐', 'Shab'), 2500);
             
             loadAssignments();
