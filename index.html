@@ -593,11 +593,11 @@
         <h1>✨ Cute Productivity Hub 🌸</h1>
         
         <div class="section">
-            <h2>🎭 Meet Alex & Shab</h2>
+            <h2>🎭 Meet Lexy & Shab</h2>
             <div class="characters" id="characters-area">
-                <div class="character-container" id="alex-container">
-                    <div class="character" id="alex" draggable="true">👧</div>
-                    <div class="character-label">Alex</div>
+                <div class="character-container" id="lexy-container">
+                    <div class="character" id="lexy" draggable="true">👧</div>
+                    <div class="character-label">Lexy</div>
                 </div>
                 <div class="character-container" id="shab-container" style="left: 80px; top: 60px;">
                     <div class="character" id="shab" draggable="true">👦</div>
@@ -606,7 +606,7 @@
             </div>
             <div id="speech-bubble" class="speech-bubble"></div>
             <p style="text-align: center; margin-top: 15px; font-style: italic; color: #666;">
-                💬 Click on Alex or Shab to hear them speak! Drag them around! ✨
+                💬 Click on Lexy or Shab to hear them speak! Drag them around! ✨
             </p>
         </div>
 
@@ -659,25 +659,99 @@
     </div>
 
     <script>
-        // Enhanced Global Variables using in-memory storage instead of localStorage
+        // Enhanced Global Variables with localStorage integration
         let assignments = [];
         let score = 0;
         let gameBunny = { x: 175, y: 125, vx: 1.5, vy: 1.2, size: 20 };
         let gameCarrots = [];
         let particles = [];
         let achievementCount = 0;
+        let characterPositions = {
+            lexy: { x: 30, y: 30 },
+            shab: { x: 80, y: 60 }
+        };
         
         const quotes = [
-            "🌟 You're absolutely amazing! - Alex",
+            "🌟 You're absolutely amazing! - Lexy",
             "💪 Keep crushing those goals! - Shab",
-            "🌈 One magical step at a time! - Alex",
+            "🌈 One magical step at a time! - Lexy",
             "🚀 Dream big, achieve bigger! - Shab",
-            "✨ Your potential is limitless! - Alex",
+            "✨ Your potential is limitless! - Lexy",
             "🎯 Focus and you'll conquer anything! - Shab",
-            "🌸 Believe in your beautiful self! - Alex",
+            "🌸 Believe in your beautiful self! - Lexy",
             "⭐ You're destined for greatness! - Shab"
         ];
         let currentQuote = 0;
+
+        // LocalStorage functions
+        function saveData(key, data) {
+            try {
+                localStorage.setItem(key, JSON.stringify(data));
+            } catch (error) {
+                console.warn('Could not save to localStorage:', error);
+            }
+        }
+
+        function loadData(key, defaultValue = null) {
+            try {
+                const stored = localStorage.getItem(key);
+                return stored ? JSON.parse(stored) : defaultValue;
+            } catch (error) {
+                console.warn('Could not load from localStorage:', error);
+                return defaultValue;
+            }
+        }
+
+        function saveAssignments() {
+            saveData('productivityHub_assignments', assignments);
+        }
+
+        function loadAssignments() {
+            assignments = loadData('productivityHub_assignments', []);
+            renderAssignments();
+        }
+
+        function saveScore() {
+            saveData('productivityHub_score', score);
+        }
+
+        function loadScore() {
+            score = loadData('productivityHub_score', 0);
+            document.getElementById('score').textContent = score;
+        }
+
+        function saveCharacterPositions() {
+            saveData('productivityHub_characterPositions', characterPositions);
+        }
+
+        function loadCharacterPositions() {
+            characterPositions = loadData('productivityHub_characterPositions', {
+                lexy: { x: 30, y: 30 },
+                shab: { x: 80, y: 60 }
+            });
+            applyCharacterPositions();
+        }
+
+        function saveDarkMode() {
+            saveData('productivityHub_darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        function loadDarkMode() {
+            const isDark = loadData('productivityHub_darkMode', false);
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        function applyCharacterPositions() {
+            const lexyContainer = document.getElementById('lexy-container');
+            const shabContainer = document.getElementById('shab-container');
+            
+            lexyContainer.style.left = characterPositions.lexy.x + 'px';
+            lexyContainer.style.top = characterPositions.lexy.y + 'px';
+            shabContainer.style.left = characterPositions.shab.x + 'px';
+            shabContainer.style.top = characterPositions.shab.y + 'px';
+        }
 
         // Create floating particles
         function createParticles() {
@@ -703,11 +777,11 @@
         }
 
         // Enhanced speech with more personality
-        function speak(text, character = 'Alex') {
+        function speak(text, character = 'Lexy') {
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 0.9;
-                utterance.pitch = character === 'Alex' ? 1.6 : 1.1;
+                utterance.pitch = character === 'Lexy' ? 1.6 : 1.1;
                 utterance.volume = 0.8;
                 speechSynthesis.speak(utterance);
             }
@@ -764,7 +838,7 @@
         }
 
         // Assignment functions
-        function loadAssignments() {
+        function renderAssignments() {
             const list = document.getElementById('assignments-list');
             list.innerHTML = '';
             
@@ -832,17 +906,19 @@
             });
             
             document.getElementById('add-assignment').reset();
-            loadAssignments();
+            saveAssignments();
+            renderAssignments();
             speak('📚 New assignment added! You\'ve got this! 💪', 'Shab');
             showAchievement('Assignment Added!');
         }
 
         function toggleAssignment(index) {
             assignments[index].completed = !assignments[index].completed;
-            loadAssignments();
+            saveAssignments();
+            renderAssignments();
             
             if (assignments[index].completed) {
-                speak('🎉 Awesome! Assignment completed! You\'re amazing! ✨', 'Alex');
+                speak('🎉 Awesome! Assignment completed! You\'re amazing! ✨', 'Lexy');
                 showAchievement('Assignment Completed!');
                 createCelebration();
             } else {
@@ -852,8 +928,9 @@
 
         function deleteAssignment(index) {
             assignments.splice(index, 1);
-            loadAssignments();
-            speak('🗑️ Assignment removed! Stay organized! ✨', 'Alex');
+            saveAssignments();
+            renderAssignments();
+            speak('🗑️ Assignment removed! Stay organized! ✨', 'Lexy');
         }
 
         function createCelebration() {
@@ -893,6 +970,7 @@
                     speak(`⏰ Reminder: ${assignment.subject} is due soon! Time to work! 💪`, 'Shab');
                     showAchievement(`Reminder: ${assignment.subject} due soon!`);
                     assignment.reminded = true;
+                    saveAssignments();
                 }
             });
         }
@@ -906,7 +984,7 @@
                 if (form.style.display === 'none') {
                     form.style.display = 'block';
                     openBtn.textContent = '❌ Close Message Portal';
-                    speak('💌 Message portal opened! Send me your thoughts! ✨', 'Alex');
+                    speak('💌 Message portal opened! Send me your thoughts! ✨', 'Lexy');
                 } else {
                     form.style.display = 'none';
                     openBtn.textContent = '💬 Open Message Portal';
@@ -914,7 +992,7 @@
             });
             
             form.addEventListener('submit', (e) => {
-                speak('🚀 Message sent! Thanks for reaching out! 💖', 'Alex');
+                speak('🚀 Message sent! Thanks for reaching out! 💖', 'Lexy');
                 showAchievement('Message Sent!');
             });
         }
@@ -931,7 +1009,7 @@
                 reader.onload = function(e) {
                     img.src = e.target.result;
                     preview.style.display = 'block';
-                    speak('📸 Beautiful photo! A moment captured in time! ✨', 'Alex');
+                    speak('📸 Beautiful photo! A moment captured in time! ✨', 'Lexy');
                     showAchievement('Photo Loaded!');
                 };
                 reader.readAsDataURL(fileInput.files[0]);
@@ -945,17 +1023,17 @@
 
         // Enhanced character interactions
         function initCharacterInteractions() {
-            const alex = document.getElementById('alex');
+            const lexy = document.getElementById('lexy');
             const shab = document.getElementById('shab');
             
-            alex.addEventListener('click', () => {
-                const alexQuotes = [
+            lexy.addEventListener('click', () => {
+                const lexyQuotes = [
                     "Hi there! Ready to be productive? 🌸",
                     "You're doing amazing! Keep it up! ✨",
                     "I believe in you completely! 💖",
                     "Let's make today magical! 🦄"
                 ];
-                speak(alexQuotes[Math.floor(Math.random() * alexQuotes.length)], 'Alex');
+                speak(lexyQuotes[Math.floor(Math.random() * lexyQuotes.length)], 'Lexy');
             });
             
             shab.addEventListener('click', () => {
@@ -1018,8 +1096,15 @@
                 const maxX = window.innerWidth - draggedElement.offsetWidth;
                 const maxY = window.innerHeight - draggedElement.offsetHeight;
                 
-                draggedElement.style.left = Math.max(0, Math.min(newX, maxX)) + 'px';
-                draggedElement.style.top = Math.max(0, Math.min(newY, maxY)) + 'px';
+                const finalX = Math.max(0, Math.min(newX, maxX));
+                const finalY = Math.max(0, Math.min(newY, maxY));
+                
+                draggedElement.style.left = finalX + 'px';
+                draggedElement.style.top = finalY + 'px';
+                
+                // Update character positions for saving
+                const characterId = draggedElement.id.replace('-container', '');
+                characterPositions[characterId] = { x: finalX, y: finalY };
             }
 
             function handleEnd(e) {
@@ -1027,6 +1112,9 @@
                     draggedElement.style.zIndex = '10';
                     draggedElement.style.pointerEvents = 'auto';
                     document.body.style.userSelect = '';
+                    
+                    // Save positions
+                    saveCharacterPositions();
                     
                     // If it was just a click (not a drag), trigger the click event
                     if (!isDragging && e.type !== 'touchend') {
@@ -1192,13 +1280,14 @@
                         carrot.active = false;
                         score++;
                         document.getElementById('score').textContent = score;
+                        saveScore();
                         
                         // Achievement milestones
                         if (score % 10 === 0) {
                             showAchievement(`${score} Carrots Fed!`);
                             speak(`🏆 Wow! ${score} carrots! The bunny loves you! 🥕`, 'Shab');
                         } else if (score % 5 === 0) {
-                            speak('🥕 Yummy! More carrots please! 🐰', 'Alex');
+                            speak('🥕 Yummy! More carrots please! 🐰', 'Lexy');
                         }
                         
                         // Create eating effect
@@ -1285,7 +1374,8 @@
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
-            speak(isDark ? '🌙 Dark mode activated! Cozy vibes! ✨' : '☀️ Light mode activated! Bright and cheerful! 🌸', 'Alex');
+            saveDarkMode();
+            speak(isDark ? '🌙 Dark mode activated! Cozy vibes! ✨' : '☀️ Light mode activated! Bright and cheerful! 🌸', 'Lexy');
         }
 
         // Event listeners
@@ -1294,15 +1384,20 @@
             addAssignment();
         });
 
-        // Enhanced load function
+        // Enhanced load function with localStorage integration
         window.onload = function() {
+            // Load saved data
+            loadDarkMode();
+            loadAssignments();
+            loadScore();
+            loadCharacterPositions();
+            
             createParticles();
             setInterval(createParticles, 30000); // Refresh particles
             
-            speak('✨ Welcome to your magical productivity hub! I\'m Alex! 🌸', 'Alex');
-            setTimeout(() => speak('🚀 And I\'m Shab! Ready to make today incredible? ⭐', 'Shab'), 2500);
+            speak('✨ Welcome back to your magical productivity hub! I\'m Lexy! 🌸', 'Lexy');
+            setTimeout(() => speak('🚀 And I\'m Shab! Ready to continue being incredible? ⭐', 'Shab'), 2500);
             
-            loadAssignments();
             updateClock();
             setInterval(updateClock, 1000);
             setInterval(checkReminders, 60000);
