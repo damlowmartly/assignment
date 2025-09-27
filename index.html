@@ -597,7 +597,7 @@
             <div class="characters" id="characters-area">
                 <div class="character-container" id="alex-container">
                     <div class="character" id="alex" draggable="true">👧</div>
-                    <div class="character-label">Alex</div>
+                    <div class="character-label">Lexy</div>
                 </div>
                 <div class="character-container" id="shab-container" style="left: 80px; top: 60px;">
                     <div class="character" id="shab" draggable="true">👦</div>
@@ -606,7 +606,7 @@
             </div>
             <div id="speech-bubble" class="speech-bubble"></div>
             <p style="text-align: center; margin-top: 15px; font-style: italic; color: #666;">
-                💬 Click on Alex or Shab to hear them speak! Drag them around! ✨
+                💬 Click on Lexy or Shab to hear them speak! Drag them around! ✨
             </p>
         </div>
 
@@ -681,13 +681,13 @@
         }
         
         const quotes = [
-            "🌟 You're absolutely amazing! - Alex",
+            "🌟 You're absolutely amazing! - Lexy",
             "💪 Keep crushing those goals! - Shab",
-            "🌈 One magical step at a time! - Alex",
+            "🌈 One magical step at a time! - Lexy",
             "🚀 Dream big, achieve bigger! - Shab",
-            "✨ Your potential is limitless! - Alex",
+            "✨ Your potential is limitless! - Lexy",
             "🎯 Focus and you'll conquer anything! - Shab",
-            "🌸 Believe in your beautiful self! - Alex",
+            "🌸 Believe in your beautiful self! - Lexy",
             "⭐ You're destined for greatness! - Shab"
         ];
         let currentQuote = 0;
@@ -716,7 +716,7 @@
         }
 
         // Enhanced speech with more personality
-        function speak(text, character = 'Alex') {
+        function speak(text, character = 'Lexy') {
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 0.9;
@@ -857,7 +857,7 @@
             loadAssignments();
             
             if (assignments[index].completed) {
-                speak('🎉 Awesome! Assignment completed! You\'re amazing! ✨', 'Alex');
+                speak('🎉 Awesome! Assignment completed! You\'re amazing! ✨', 'Lexy');
                 showAchievement('Assignment Completed!');
                 createCelebration();
                 achievementCount++;
@@ -871,7 +871,7 @@
             assignments.splice(index, 1);
             saveAssignments(); // Save to localStorage
             loadAssignments();
-            speak('🗑️ Assignment removed! Stay organized! ✨', 'Alex');
+            speak('🗑️ Assignment removed! Stay organized! ✨', 'Lexy');
         }
 
         function createCelebration() {
@@ -924,7 +924,7 @@
                 if (form.style.display === 'none') {
                     form.style.display = 'block';
                     openBtn.textContent = '❌ Close Message Portal';
-                    speak('💌 Message portal opened! Send me your thoughts! ✨', 'Alex');
+                    speak('💌 Message portal opened! Send me your thoughts! ✨', 'Lexy');
                 } else {
                     form.style.display = 'none';
                     openBtn.textContent = '💬 Open Message Portal';
@@ -949,7 +949,7 @@
                 reader.onload = function(e) {
                     img.src = e.target.result;
                     preview.style.display = 'block';
-                    speak('📸 Beautiful photo! A moment captured in time! ✨', 'Alex');
+                    speak('📸 Beautiful photo! A moment captured in time! ✨', 'Lexy');
                     showAchievement('Photo Loaded!');
                 };
                 reader.readAsDataURL(fileInput.files[0]);
@@ -973,7 +973,7 @@
                     "I believe in you completely! 💖",
                     "Let's make today magical! 🦄"
                 ];
-                speak(alexQuotes[Math.floor(Math.random() * alexQuotes.length)], 'Alex');
+                speak(alexQuotes[Math.floor(Math.random() * alexQuotes.length)], 'Lexy');
             });
             
             shab.addEventListener('click', () => {
@@ -1306,7 +1306,7 @@
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
-            speak(isDark ? '🌙 Dark mode activated! Cozy vibes! ✨' : '☀️ Light mode activated! Bright and cheerful! 🌸', 'Alex');
+            speak(isDark ? '🌙 Dark mode activated! Cozy vibes! ✨' : '☀️ Light mode activated! Bright and cheerful! 🌸', 'Lexy');
         }
 
         // Event listeners
@@ -1323,7 +1323,7 @@
             // Load saved score
             document.getElementById('score').textContent = score;
             
-            speak('✨ Welcome to your magical productivity hub! I\'m Alex! 🌸', 'Alex');
+            speak('✨ Welcome to your magical productivity hub! I\'m Alex! 🌸', 'Lexy');
             setTimeout(() => speak('🚀 And I\'m Shab! Ready to make today incredible? ⭐', 'Shab'), 2500);
             
             loadAssignments();
@@ -1401,7 +1401,7 @@
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
             
-            speak('📤 Your data has been exported! Share your progress! ✨', 'Alex');
+            speak('📤 Your data has been exported! Share your progress! ✨', 'Lexy');
             showAchievement('Data Exported!');
         }
 
