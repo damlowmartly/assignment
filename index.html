@@ -593,7 +593,7 @@
         <h1>✨ Cute Productivity Hub 🌸</h1>
         
         <div class="section">
-            <h2>🎭 Meet Lexy & Shab</h2>
+            <h2>🎭 Meet Alex & Shab</h2>
             <div class="characters" id="characters-area">
                 <div class="character-container" id="alex-container">
                     <div class="character" id="alex" draggable="true">👧</div>
@@ -606,7 +606,7 @@
             </div>
             <div id="speech-bubble" class="speech-bubble"></div>
             <p style="text-align: center; margin-top: 15px; font-style: italic; color: #666;">
-                💬 Click on Lexy or Shab to hear them speak! Drag them around! ✨
+                💬 Click on Alex or Shab to hear them speak! Drag them around! ✨
             </p>
         </div>
 
@@ -624,7 +624,7 @@
         <div class="section">
             <h2>💌 Send Me a Message</h2>
             <button id="open-message">💬 Open Message Portal</button>
-            <form id="message-form" action="https://formspree.io/f/xeoreqob" method="POST">
+            <form id="message-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
                 <input type="email" name="email" placeholder="✉️ Your email address" required>
                 <textarea name="message" placeholder="💭 Your amazing message..." required></textarea>
                 <button type="submit">🚀 Send Message</button>
@@ -659,35 +659,22 @@
     </div>
 
     <script>
-        // Enhanced Global Variables using localStorage for persistent storage
-        let assignments = JSON.parse(localStorage.getItem('productivityHub_assignments')) || [];
-        let score = parseInt(localStorage.getItem('productivityHub_score')) || 0;
+        // Enhanced Global Variables using in-memory storage instead of localStorage
+        let assignments = [];
+        let score = 0;
         let gameBunny = { x: 175, y: 125, vx: 1.5, vy: 1.2, size: 20 };
         let gameCarrots = [];
         let particles = [];
-        let achievementCount = parseInt(localStorage.getItem('productivityHub_achievements')) || 0;
-
-        // Helper functions to save data to localStorage
-        function saveAssignments() {
-            localStorage.setItem('productivityHub_assignments', JSON.stringify(assignments));
-        }
-
-        function saveScore() {
-            localStorage.setItem('productivityHub_score', score.toString());
-        }
-
-        function saveAchievements() {
-            localStorage.setItem('productivityHub_achievements', achievementCount.toString());
-        }
+        let achievementCount = 0;
         
         const quotes = [
-            "🌟 You're absolutely amazing! - Lexy",
+            "🌟 You're absolutely amazing! - Alex",
             "💪 Keep crushing those goals! - Shab",
-            "🌈 One magical step at a time! - Lexy",
+            "🌈 One magical step at a time! - Alex",
             "🚀 Dream big, achieve bigger! - Shab",
-            "✨ Your potential is limitless! - Lexy",
+            "✨ Your potential is limitless! - Alex",
             "🎯 Focus and you'll conquer anything! - Shab",
-            "🌸 Believe in your beautiful self! - Lexy",
+            "🌸 Believe in your beautiful self! - Alex",
             "⭐ You're destined for greatness! - Shab"
         ];
         let currentQuote = 0;
@@ -716,7 +703,7 @@
         }
 
         // Enhanced speech with more personality
-        function speak(text, character = 'Lexy') {
+        function speak(text, character = 'Alex') {
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 0.9;
@@ -844,7 +831,6 @@
                 createdAt: new Date()
             });
             
-            saveAssignments(); // Save to localStorage
             document.getElementById('add-assignment').reset();
             loadAssignments();
             speak('📚 New assignment added! You\'ve got this! 💪', 'Shab');
@@ -853,15 +839,12 @@
 
         function toggleAssignment(index) {
             assignments[index].completed = !assignments[index].completed;
-            saveAssignments(); // Save to localStorage
             loadAssignments();
             
             if (assignments[index].completed) {
                 speak('🎉 Awesome! Assignment completed! You\'re amazing! ✨', 'Alex');
                 showAchievement('Assignment Completed!');
                 createCelebration();
-                achievementCount++;
-                saveAchievements();
             } else {
                 speak('📝 Back to work mode! You can do it! 💪', 'Shab');
             }
@@ -869,9 +852,8 @@
 
         function deleteAssignment(index) {
             assignments.splice(index, 1);
-            saveAssignments(); // Save to localStorage
             loadAssignments();
-            speak('🗑️ Assignment removed! Stay organized! ✨', 'Alex);
+            speak('🗑️ Assignment removed! Stay organized! ✨', 'Alex');
         }
 
         function createCelebration() {
@@ -1209,15 +1191,12 @@
                     if (distance < gameBunny.size + 15 && carrot.active) {
                         carrot.active = false;
                         score++;
-                        saveScore(); // Save to localStorage
                         document.getElementById('score').textContent = score;
                         
                         // Achievement milestones
                         if (score % 10 === 0) {
                             showAchievement(`${score} Carrots Fed!`);
                             speak(`🏆 Wow! ${score} carrots! The bunny loves you! 🥕`, 'Shab');
-                            achievementCount++;
-                            saveAchievements();
                         } else if (score % 5 === 0) {
                             speak('🥕 Yummy! More carrots please! 🐰', 'Alex');
                         }
@@ -1320,9 +1299,6 @@
             createParticles();
             setInterval(createParticles, 30000); // Refresh particles
             
-            // Load saved score
-            document.getElementById('score').textContent = score;
-            
             speak('✨ Welcome to your magical productivity hub! I\'m Alex! 🌸', 'Alex');
             setTimeout(() => speak('🚀 And I\'m Shab! Ready to make today incredible? ⭐', 'Shab'), 2500);
             
@@ -1336,96 +1312,7 @@
             initDraggableEverywhere();
             initCharacterInteractions();
             initMessageForm();
-            
-            // Show data status
-            updateDataStatus();
         };
-
-        // Add data management functions
-        function updateDataStatus() {
-            const dataInfo = document.getElementById('data-info');
-            if (!dataInfo) {
-                const infoDiv = document.createElement('div');
-                infoDiv.id = 'data-info';
-                infoDiv.innerHTML = `
-                    <div style="background: rgba(255,255,255,0.9); padding: 15px; border-radius: 15px; margin: 20px 0; text-align: center; border-left: 4px solid #ff69b4;">
-                        <strong>📊 Your Progress:</strong><br>
-                        <span id="stats-display">
-                            Assignments: ${assignments.length} | Completed: ${assignments.filter(a => a.completed).length} | 
-                            Game Score: ${score} | Achievements: ${achievementCount}
-                        </span><br>
-                        <small style="color: #666;">Data saved locally in your browser • Last updated: ${new Date().toLocaleString()}</small><br>
-                        <button onclick="exportData()" style="margin: 10px 5px; padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 20px; cursor: pointer;">
-                            📤 Export Data
-                        </button>
-                        <button onclick="clearAllData()" style="margin: 10px 5px; padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 20px; cursor: pointer;">
-                            🗑️ Clear Data
-                        </button>
-                        <button onclick="updateDataStatus()" style="margin: 10px 5px; padding: 8px 16px; background: #17a2b8; color: white; border: none; border-radius: 20px; cursor: pointer;">
-                            🔄 Refresh
-                        </button>
-                    </div>
-                `;
-                document.querySelector('.container').appendChild(infoDiv);
-            } else {
-                document.getElementById('stats-display').innerHTML = `
-                    Assignments: ${assignments.length} | Completed: ${assignments.filter(a => a.completed).length} | 
-                    Game Score: ${score} | Achievements: ${achievementCount}
-                `;
-            }
-        }
-
-        function exportData() {
-            const data = {
-                exportDate: new Date().toISOString(),
-                assignments: assignments,
-                gameScore: score,
-                achievementCount: achievementCount,
-                stats: {
-                    totalAssignments: assignments.length,
-                    completedAssignments: assignments.filter(a => a.completed).length,
-                    pendingAssignments: assignments.filter(a => !a.completed).length,
-                    overdueAssignments: assignments.filter(a => !a.completed && new Date(a.deadline) < new Date()).length
-                }
-            };
-            
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `productivity-hub-data-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            speak('📤 Your data has been exported! Share your progress! ✨', 'Alex');
-            showAchievement('Data Exported!');
-        }
-
-        function clearAllData() {
-            if (confirm('🗑️ Are you sure you want to clear all your productivity data? This cannot be undone!')) {
-                // Clear localStorage
-                localStorage.removeItem('productivityHub_assignments');
-                localStorage.removeItem('productivityHub_score');
-                localStorage.removeItem('productivityHub_achievements');
-                
-                // Reset in-memory data
-                assignments = [];
-                score = 0;
-                achievementCount = 0;
-                
-                // Update displays
-                loadAssignments();
-                document.getElementById('score').textContent = score;
-                updateDataStatus();
-                
-                speak('🧹 All data cleared! Fresh start incoming! 🌟', 'Shab');
-                showAchievement('Data Cleared - Fresh Start!');
-            }
-        }
     </script>
 </body>
 </html>
